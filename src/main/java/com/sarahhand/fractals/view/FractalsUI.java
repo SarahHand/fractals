@@ -22,7 +22,7 @@ public class FractalsUI implements MouseListener {
 	JLabel imageLabel;
 	
 	public FractalsUI() {
-		frame = new JFrame("Fractals Drawer");
+		frame = new JFrame("Fractal Viewer");
 		frame.setLayout(new FlowLayout());
 		frameDimension = new Dimension(800, 700);
 		frame.setSize(frameDimension);

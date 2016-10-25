@@ -9,7 +9,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.sarahhand.fractals.model.MandelbrotConfig;
 import com.sarahhand.fractals.model.MandelbrotViewer;
 import com.sarahhand.fractals.model.MandelbrotViewerFactory;
 
@@ -17,6 +16,7 @@ public class FractalsUI implements MouseListener {
 	
 	JFrame frame;
 	Dimension frameDimension;
+	MandelbrotViewerFactory viewerFactory = new MandelbrotViewerFactory();
 	MandelbrotViewer viewer;
 	ImageIcon image;
 	JLabel imageLabel;
@@ -27,7 +27,7 @@ public class FractalsUI implements MouseListener {
 		frameDimension = new Dimension(800, 700);
 		frame.setSize(frameDimension);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		viewer = MandelbrotViewerFactory.createViewer();
+		viewer = viewerFactory.createViewer();
 		image = new ImageIcon(viewer.getView(frameDimension));
 		imageLabel = new JLabel(image);
 		frame.add(imageLabel);

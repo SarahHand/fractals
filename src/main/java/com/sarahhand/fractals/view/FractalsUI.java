@@ -21,9 +21,10 @@ import com.sarahhand.fractals.model.MandelbrotViewerFactory;
  *
  */
 public class FractalsUI implements MouseListener {
-	
+
 	private JFrame frame;
 	private Dimension frameDimension;
+	MandelbrotViewerFactory viewerFactory = new MandelbrotViewerFactory();
 	MandelbrotViewer viewer;
 	private MandelbrotConfig mandelConfig;
 	private ColorPalette palette;
@@ -31,12 +32,12 @@ public class FractalsUI implements MouseListener {
 	private JLabel imageLabel;
 	
 	public FractalsUI() {
-		frame = new JFrame("Fractals Drawer");
+		frame = new JFrame("Fractal Viewer");
 		frame.setLayout(new FlowLayout());
 		frameDimension = new Dimension(800, 700);
 		frame.setSize(frameDimension);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		viewer = MandelbrotViewerFactory.createViewer();
+		viewer = viewerFactory.createViewer();
 		mandelConfig = MandelbrotConfig.DEAFAULT_CONFIG;
 		image = new ImageIcon(viewer.getView(frameDimension));
 		imageLabel = new JLabel(image);

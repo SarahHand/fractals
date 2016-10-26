@@ -11,7 +11,7 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 	
 	private static final double log2 = Math.log(2);
 	
-	public MandelbrotConfig config;
+	private MandelbrotConfig config;
 	
 	@Override
 	public Image getView(Dimension dimensions){
@@ -48,7 +48,7 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 
 	@Override
 	public MandelbrotConfig getConfig(){
-		return null;
+		return config;
 	}
 
 	MandelbrotViewerImpl(MandelbrotConfig config){

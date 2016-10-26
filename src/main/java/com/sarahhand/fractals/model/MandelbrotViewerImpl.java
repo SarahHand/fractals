@@ -4,12 +4,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 
 class MandelbrotViewerImpl implements MandelbrotViewer{
 	
-	private static final double log2 = Math.log(2);
+	private static final double LOG2 = Math.log(2);
 	
 	private MandelbrotConfig config;
 
@@ -67,14 +69,14 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 			if(z.x*z.x+z.y*z.y > 1000){//Reminder: test with 2
 				
 				double log_zn = Math.log(z.x*z.x+z.y*z.y)/2;
-				double nu = Math.log(log_zn/log2)/log2;
+				double nu = Math.log(log_zn/LOG2)/LOG2;
 				
 				double interpolateValue = (double)n + 1.0 - nu;
 				
 				interpolateValue *= 10;
 				
-				Color col1 = config.getPalette().getColor((int)(Math.floor(interpolateValue))%200);
-				Color col2 = config.getPalette().getColor((int)(Math.floor(interpolateValue)+1)%200);
+				Color col1 = config.getPalette().getColor(((int)(Math.floor(interpolateValue))%200 + 200) % 200);
+				Color col2 = config.getPalette().getColor(((int)(Math.floor(interpolateValue+1))%200 + 200) % 200);
 				
 				return interpolate(col1, col2, interpolateValue - Math.floor(interpolateValue));
 			}

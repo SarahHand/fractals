@@ -12,6 +12,16 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 	private static final double log2 = Math.log(2);
 	
 	private MandelbrotConfig config;
+
+	@Override
+	public void setConfig(MandelbrotConfig config){
+		this.config = config;
+	}
+
+	@Override
+	public MandelbrotConfig getConfig(){
+		return config;
+	}
 	
 	@Override
 	public Image getView(Dimension dimensions){
@@ -39,16 +49,6 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 		double transformedY = config.getCenter().y + (double)y/config.getZoom();
 		
 		return new Double(transformedX, transformedY);
-	}
-
-	@Override
-	public void setConfig(MandelbrotConfig config){
-		this.config = config;
-	}
-
-	@Override
-	public MandelbrotConfig getConfig(){
-		return config;
 	}
 
 	MandelbrotViewerImpl(MandelbrotConfig config){

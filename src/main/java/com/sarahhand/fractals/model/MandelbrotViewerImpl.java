@@ -67,7 +67,7 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 			if(z.x*z.x+z.y*z.y > 1000){//Reminder: test with 2
 				
 				double log_zn = Math.log(z.x*z.x+z.y*z.y)/2;
-				double nu = Math.log(Math.log(log_zn/log2))/log2;
+				double nu = Math.log(log_zn/log2)/log2;
 				
 				double interpolateValue = (double)n + 1.0 - nu;
 				

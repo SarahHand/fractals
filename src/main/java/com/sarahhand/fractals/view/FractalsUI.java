@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Point2D.Double;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -47,19 +46,7 @@ public class FractalsUI implements MouseListener {
 	}
 
 	//TODO This one, not the others.
-	public void mouseClicked(MouseEvent me) {
-		int buttonType = me.getButton();
-		int mouseX = me.getX();
-		int mouseY = me.getY();
-		Double center = new Double(mouseX, mouseY);
-		mandelConfig.setCenter(center);
-		if(buttonType == 1) {
-			mandelConfig.setZoom(mandelConfig.getZoom() * 10);
-		} else if(buttonType == 3) {
-			mandelConfig.setZoom(mandelConfig.getZoom() / 10);
-		}
-		viewer.getView(frameDimension);
-	}
+	public void mouseClicked(MouseEvent me) {}
 
 	public void mouseEntered(MouseEvent me) {}
 

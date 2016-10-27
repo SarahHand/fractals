@@ -30,7 +30,7 @@ public class FractalsUI implements MouseListener {
 	private ColorPalette palette;
 	private ImageIcon image;
 	private JLabel imageLabel;
-	
+
 	public FractalsUI() {
 		frame = new JFrame("Fractal Viewer");
 		frame.setLayout(new FlowLayout());
@@ -46,18 +46,32 @@ public class FractalsUI implements MouseListener {
 		frame.setVisible(true);
 	}
 
-	//TODO This one, not the others.
+	/** Creates a new MandelbrotConfig using the existing one. The new config will have a new center and zoom.
+	 * 
+	 * @param height
+	 * @param width
+	 * @param xPos
+	 * @param yPos
+	 * @return
+	 */
+	private MandelbrotConfig createNewConfig(int height, int width, int xPos, int yPos) {
+		double mouseX = width / 2 + xPos;
+		double mouseY = height / 2 + yPos;
+		Double newCenter = new Double(mandelConfig.getCenter().x + mouseX / mandelConfig.getZoom(),
+				mandelConfig.getCenter().y + mouseY / mandelConfig.getZoom());
+		int newZoom = mandelConfig.getZoom() * 10;
+		return new MandelbrotConfig(newCenter, newZoom, mandelConfig);
+	}
+
 	public void mouseClicked(MouseEvent me) {
 		int buttonType = me.getButton();
 		int mouseX = me.getX();
 		int mouseY = me.getY();
-		Double center = new Double(mouseX, mouseY);
-		mandelConfig.setCenter(center);
 		if(buttonType == 1) {
-			mandelConfig.setZoom(mandelConfig.getZoom() * 10);
+			mandelConfig = createNewConfig(500, 500, mouseX, mouseY);
 		} else if(buttonType == 3) {
-			mandelConfig.setZoom(mandelConfig.getZoom() / 10);
 		}
+		viewer.setConfig(mandelConfig);
 		viewer.getView(frameDimension);
 	}
 

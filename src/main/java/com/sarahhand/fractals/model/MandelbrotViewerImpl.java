@@ -73,8 +73,8 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 				
 				interpolateValue *= 10;
 				
-				Color col1 = config.getPalette().getColor((int)(Math.floor(interpolateValue))%200);
-				Color col2 = config.getPalette().getColor((int)(Math.floor(interpolateValue)+1)%200);
+				Color col1 = config.getPalette().getColor((int)(((Math.floor(interpolateValue))%200) + 200) % 200);
+				Color col2 = config.getPalette().getColor((int)(((Math.floor(interpolateValue + 1))%200) + 200) % 200);
 				
 				return interpolate(col1, col2, interpolateValue - Math.floor(interpolateValue));
 			}

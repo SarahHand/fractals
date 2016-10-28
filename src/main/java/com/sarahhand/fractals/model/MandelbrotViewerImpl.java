@@ -13,6 +13,7 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 	
 	private static final double LOG2 = Math.log(2);
 	private static final int MIN_SIZE = 10;
+	public static final int MAX_Z = 1000;
 	
 	private MandelbrotConfig config;
 
@@ -36,7 +37,7 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 		
 		renderRect(g, new Rectangle(dimensions), dimensions, MIN_SIZE);
 		
-		System.out.println("Time: " + ((System.currentTimeMillis()-time)/1000.0) + "(secs)");
+		System.out.println("Time: " + ((System.currentTimeMillis()-time)/1000) + "(secs)");
 		return image;
 	}
 	
@@ -113,6 +114,16 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 	
 	private Color getPointCol(Double p){
 		
+		double q = (p.x - 0.25)*(p.x - 0.25) + p.y*p.y;
+		
+		if(q*(q+(p.x - 0.25)) < 0.25*p.y*p.y){
+			return Color.black;
+		}
+		
+		if((p.x+1)*(p.x+1)+p.y*p.y < 0.0625){
+			return Color.black;
+		}
+		
 		ComplexNumber c = new ComplexNumber(p.x, p.y);
 		ComplexNumber z = new ComplexNumber(0, 0);
 		
@@ -120,7 +131,7 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 			
 			z = z.multiply(z).add(c);
 			
-			if(z.x*z.x+z.y*z.y > 1000){
+			if(z.x*z.x+z.y*z.y > MAX_Z){
 				
 				double log_zn = Math.log(z.x*z.x+z.y*z.y)/2;
 				double nu = Math.log(log_zn/LOG2)/LOG2;
@@ -129,8 +140,13 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 				
 				interpolateValue *= 10;
 				
-				Color col1 = config.getPalette().getColor(((int)(Math.floor(interpolateValue))%200 + 200) % 200);
-				Color col2 = config.getPalette().getColor(((int)(Math.floor(interpolateValue+1))%200 + 200) % 200);
+				Color col1 = config.getPalette().getColor(((int)(Math.floor(interpolateValue)) %
+						ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %
+						ColorPalette.COLOR_PALETTE_LENGTH);
+				
+				Color col2 = config.getPalette().getColor(((int)(Math.floor(interpolateValue+1)) %
+						ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %
+						ColorPalette.COLOR_PALETTE_LENGTH);
 				
 				return interpolate(col1, col2, interpolateValue - Math.floor(interpolateValue));
 			}

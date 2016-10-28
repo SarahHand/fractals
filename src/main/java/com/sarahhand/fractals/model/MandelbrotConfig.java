@@ -7,7 +7,7 @@ public class MandelbrotConfig {
 	public static final MandelbrotConfig DEAFAULT_CONFIG = new MandelbrotConfig(new Double(-0.5, 0), 200, ColorPalette.DEFAULT_PALETTE, 500);
 
 	private Double center;
-	private int zoom;
+	private double zoom;
 	private ColorPalette palette;
 	private int maxDwell;
 
@@ -15,7 +15,7 @@ public class MandelbrotConfig {
 		return center;
 	}
 
-	public int getZoom() {
+	public double getZoom() {
 		return zoom;
 	}
 
@@ -27,17 +27,24 @@ public class MandelbrotConfig {
 		return maxDwell;
 	}
 
-	public MandelbrotConfig(Double center, int zoom, ColorPalette palette, int maxDwell) {
+	public MandelbrotConfig(Double center, double zoom, ColorPalette palette, int maxDwell) {
 		this.center = center;
 		this.zoom = zoom;
 		this.palette = palette;
 		this.maxDwell = maxDwell;
 	}
 	
-	public MandelbrotConfig(Double center, int zoom, MandelbrotConfig old) {
+	/** Creates a new MandelbrotConfig using an existing config, a new zoom, and a new center.
+	 * 
+	 * @param center
+	 * @param zoom
+	 * @param maxdwell
+	 * @param old
+	 */
+	public MandelbrotConfig(Double center, double zoom, int maxDwell, MandelbrotConfig old) {
 		this.center = center;
 		this.zoom = zoom;
+		this.maxDwell = maxDwell;
 		this.palette = old.palette;
-		this.maxDwell = old.maxDwell;
 	}
 }

@@ -9,6 +9,13 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 
+/**
+ * Implements <code>MandelbrotViewer</code>.
+ * 
+ * @author J9465812
+ * @see MandelbrotViewer
+ */
+
 class MandelbrotViewerImpl implements MandelbrotViewer{
 	
 	private static final double LOG2 = Math.log(2);

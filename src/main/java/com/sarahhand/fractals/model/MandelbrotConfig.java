@@ -2,6 +2,13 @@ package com.sarahhand.fractals.model;
 
 import java.awt.geom.Point2D.Double;
 
+/**
+ * Class that stores information about a particular image of the Mandelbrot Set.
+ * 
+ * @author J9465812
+ *
+ */
+
 public class MandelbrotConfig{
 
 	public static final MandelbrotConfig DEAFAULT_CONFIG = new MandelbrotConfig(new Double(-0.5, 0), 200, ColorPalette.DEFAULT_PALETTE, 500);

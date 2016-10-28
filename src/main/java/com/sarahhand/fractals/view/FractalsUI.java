@@ -43,6 +43,7 @@ public class FractalsUI implements MouseListener {
 
 	public FractalsUI() {
 		frame = new JFrame("Fractal Viewer");
+		
 		frame.setLayout(new FlowLayout());
 		frameDimension = new Dimension(FRAME_WIDTH, FRAME_HEIGHT);
 		viewerFactory = new MandelbrotViewerFactory();
@@ -56,7 +57,7 @@ public class FractalsUI implements MouseListener {
 		frame.addMouseListener(this);
 		frame.setVisible(true);
 	}
-
+	
 	/** Creates a new MandelbrotConfig using the existing one. The new config will have a new center and zoom.
 	 * 
 	 * @param frameDimension

@@ -32,6 +32,7 @@ public class FractalsUI implements MouseListener {
 	
 	public FractalsUI() {
 		frame = new JFrame("Fractal Viewer");
+		
 		frame.setLayout(new FlowLayout());
 		frameDimension = new Dimension(800, 700);
 		frame.setSize(frameDimension);

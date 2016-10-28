@@ -2,9 +2,23 @@ package com.sarahhand.fractals.model;
 
 import java.awt.Color;
 
-public class ColorPalette{
+/**
+ * Class that stores a color palette.
+ * 
+ * @author J9465812
+ *
+ */
 
+public class ColorPalette{
+	
+	/**
+	 * the default rainbow color palette
+	 */
 	static final ColorPalette DEFAULT_PALETTE;
+	
+	/**
+	 * 
+	 */
 	public static final int COLOR_PALETTE_LENGTH = 200;
 
 	static{

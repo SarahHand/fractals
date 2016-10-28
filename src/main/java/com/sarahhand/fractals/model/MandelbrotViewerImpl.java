@@ -12,27 +12,81 @@ import java.awt.image.BufferedImage;
 class MandelbrotViewerImpl implements MandelbrotViewer{
 	
 	private static final double LOG2 = Math.log(2);
+	private static final int MIN_SIZE = 10;
 	
 	private MandelbrotConfig config;
 	
 	@Override
 	public Image getView(Dimension dimensions){
 		
+		long time = System.currentTimeMillis();
+		
 		BufferedImage image = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = image.createGraphics();
 		
-		for(int x = 0; x < dimensions.width; x++){
-			for(int y = 0; y < dimensions.height; y++){
-				
-				Double point = transform(dimensions.width/2 - x, dimensions.height/2 - y, config);
-				Color pointCol = getPointCol(point);
-				
-				g.setColor(pointCol);
-				g.fillRect(x, y, 1, 1);
+		renderRect(g, new Rectangle(dimensions), dimensions, MIN_SIZE);
+		
+		System.out.println("Time: " + ((System.currentTimeMillis()-time)/1000.0) + "(secs)");
+		return image;
+	}
+	
+	private void renderRect(Graphics2D g2d, Rectangle rect, Dimension dimensions, int minSize){
+		
+		if(rect.width < minSize || rect.height < minSize){
+			
+			for(int x = rect.x; x < rect.x + rect.width; x++){
+				for(int y = rect.y; y < rect.y + rect.width; y++){
+					renderPoint(new Point(x, y), g2d, dimensions);
+				}
 			}
+			
+			return;
 		}
 		
-		return image;
+		boolean filledRect = true;
+		
+		for(int x = rect.x; x < rect.x+rect.width; x++){
+			
+			filledRect = filledRect && renderPoint(new Point(x, rect.y), g2d, dimensions);
+			filledRect = filledRect && renderPoint(new Point(x, rect.y + rect.height), g2d, dimensions);
+		}
+		
+		for(int y = rect.y; y < rect.y+rect.width; y++){
+			
+			filledRect = filledRect && renderPoint(new Point(rect.x, y), g2d, dimensions);
+			filledRect = filledRect && renderPoint(new Point(rect.x + rect.width, y), g2d, dimensions);
+		}
+		
+		if(filledRect == true){
+			
+			g2d.setColor(Color.BLACK);
+			
+			g2d.fill(rect);
+		}else{
+			
+			int centerX = rect.x + rect.width/2;
+			int centerY = rect.y + rect.height/2;
+			
+			renderRect(g2d, newRect(rect.x, rect.y, centerX, centerY), dimensions, minSize);
+			renderRect(g2d, newRect(centerX, rect.y, rect.x+rect.width, centerY), dimensions, minSize);
+			renderRect(g2d, newRect(rect.x, centerY, centerX, rect.y+rect.height), dimensions, minSize);
+			renderRect(g2d, newRect(centerX, centerY, rect.x+rect.width, rect.y+rect.height), dimensions, minSize);
+		}
+	}
+	
+	private Rectangle newRect(int x1, int y1, int x2, int y2){
+		return new Rectangle(x1, y1, x2-x1, y2-y1);
+	}
+	
+	private boolean renderPoint(Point screenCoords, Graphics2D g2d, Dimension dimensions){
+		
+		Double point = transform(dimensions.width/2 - screenCoords.x, dimensions.height/2 - screenCoords.y, config);
+		Color pointCol = getPointCol(point);
+		
+		g2d.setColor(pointCol);
+		g2d.fillRect(screenCoords.x, screenCoords.y, 1, 1);
+		
+		return pointCol.getRGB() == Color.black.getRGB();
 	}
 	
 	private Double transform(int x, int y, MandelbrotConfig config){
@@ -66,7 +120,7 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 			
 			z = z.multiply(z).add(c);
 			
-			if(z.x*z.x+z.y*z.y > 1000){//Reminder: test with 2
+			if(z.x*z.x+z.y*z.y > 1000){
 				
 				double log_zn = Math.log(z.x*z.x+z.y*z.y)/2;
 				double nu = Math.log(log_zn/LOG2)/LOG2;

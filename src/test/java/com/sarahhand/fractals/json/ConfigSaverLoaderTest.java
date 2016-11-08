@@ -35,15 +35,18 @@ public class ConfigSaverLoaderTest{
 	public void loadTest(){
 		
 		//Arrange
-		String fileName = "C:\\Users\\jhand\\Desktop\\Test.json";
+		Scanner scan = new Scanner(System.in);
+		
+		System.out.println("Filename:");
+		String filename = scan.nextLine();
 		ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
 
 		//Act
 		MandelbrotConfig config = null;
-		try (InputStream stream = new FileInputStream(fileName)){
+		try (InputStream stream = new FileInputStream(filename)){
 			config = (MandelbrotConfig)saverLoader.load(MandelbrotConfig.class, stream);
 		} catch (IOException e) {
-			System.err.println("Error reading contact from file=" + fileName);
+			System.err.println("Error reading contact from file=" + filename);
 			e.printStackTrace();
 		}
 		

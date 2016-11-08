@@ -17,7 +17,7 @@ public class ColorPalette{
 	/**
 	 * the default rainbow color palette
 	 */
-	public static final ColorPalette DEFAULT_PALETTE;
+	private static final ColorPalette DEFAULT_PALETTE;
 	
 	/**
 	 * 

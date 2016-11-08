@@ -1,11 +1,13 @@
 package com.sarahand.fractals.json;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.sarahhand.fractals.model.Config;
@@ -13,7 +15,9 @@ import com.sarahhand.json.JsonReaderWriter;
 
 public class ConfigSaverLoader{
 	
-	public static final ConfigSaverLoader DEFAULT = new ConfigSaverLoader();
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private static final ConfigSaverLoader DEFAULT = new ConfigSaverLoader();
 	
 	private ConfigSaverLoader(){}
 	
@@ -37,7 +41,7 @@ public class ConfigSaverLoader{
 		try {
 			file.createNewFile();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("IOException saving file", e);
 			return false;
 		}
 		
@@ -46,9 +50,8 @@ public class ConfigSaverLoader{
 		try (OutputStream fos = new FileOutputStream(fileName);){
 			
 			readerWriter.<Config>write(config, fos);
-		} catch (FileNotFoundException e) {
-		} catch (IOException e1) {
-			// ^^^^^ this will never happen because of line 34...
+		}catch (IOException e1){
+			// ^^^^^ this will never happen because of line 42...
 			return false; // ...but just in case...
 		}
 		

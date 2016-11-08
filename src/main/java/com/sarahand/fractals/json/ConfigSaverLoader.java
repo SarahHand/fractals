@@ -9,7 +9,7 @@ import java.io.OutputStream;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.sarahhand.fractals.model.Config;
-import com.sarahhand.fractals.model.MandelbrotConfig;
+import com.sarahhand.json.JsonReaderWriter;
 
 public class ConfigSaverLoader{
 	

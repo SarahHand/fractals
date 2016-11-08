@@ -1,4 +1,4 @@
-package com.sarahhand.apps;
+package com.sarahand.fractals.json;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-public class JsonReaderWriter{
+class JsonReaderWriter{
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	
@@ -20,15 +20,15 @@ public class JsonReaderWriter{
 		mapper.setPropertyNamingStrategy(pns);
 	}
 	
-	public <T> T read(String fileName, Class<? extends T> target) {
-		try (InputStream stream = this.getClass().getResourceAsStream(fileName)){
-			T object = mapper.readValue(stream, target);
-			return object;
+	public <T> T read(InputStream stream, Class<? extends T> target) {
+		
+		T object = null;
+		try {
+			object = mapper.readValue(stream, target);
 		} catch (IOException e) {
-			System.err.println("Error reading contact from file=" + fileName);
 			e.printStackTrace();
 		}
-		return null;
+		return object;
 	}
 	
 	public <T> void write(T object, OutputStream output){

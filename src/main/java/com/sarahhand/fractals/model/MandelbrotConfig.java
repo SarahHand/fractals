@@ -2,6 +2,10 @@ package com.sarahhand.fractals.model;
 
 import java.awt.geom.Point2D.Double;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Class that stores information about a particular image of the Mandelbrot Set.
  * 
@@ -9,38 +13,60 @@ import java.awt.geom.Point2D.Double;
  *
  */
 
-public class MandelbrotConfig{
+public class MandelbrotConfig implements Config{
 
 	public static final MandelbrotConfig DEAFAULT_CONFIG = new MandelbrotConfig(new Double(-0.5, 0), 200, ColorPalette.DEFAULT_PALETTE, 500);
-
-	private Double center;
+	
+	
+	private double x;
+	private double y;
 	private double zoom;
-	private ColorPalette palette;
+	private ColorPalette palette = ColorPalette.DEFAULT_PALETTE;
+	
 	private int maxDwell;
-
+	
+	@JsonIgnore
 	public Double getCenter() {
-		return center;
+		return new Double(x, y);
 	}
 
 	public double getZoom() {
 		return zoom;
 	}
 
-	public ColorPalette getPalette() {
-		return palette;
-	}
-
 	public int getMaxDwell() {
 		return maxDwell;
 	}
+	
+	public ColorPalette getPalette() {
+		return palette;
+	}
+	
+	public double getX(){
+		return x;
+	}
 
+	public double getY(){
+		return y;
+	}
+	
 	public MandelbrotConfig(Double center, double zoom, ColorPalette palette, int maxDwell) {
-		this.center = center;
+		this.x = center.x;
+		this.y = center.y;
 		this.zoom = zoom;
 		this.palette = palette;
 		this.maxDwell = maxDwell;
 	}
 	
+	@JsonCreator
+	public MandelbrotConfig(@JsonProperty("x") double x, @JsonProperty("y") double y, @JsonProperty("zoom") double zoom, @JsonProperty("maxDwell") int maxDwell, @JsonProperty("palette") ColorPalette palette) {
+		this.x = x;
+		this.y = y;
+		this.zoom = zoom;
+		this.palette = palette;
+		this.maxDwell = maxDwell;
+	}
+
 	/** Creates a new MandelbrotConfig using an existing config, a new zoom, and a new center.
 	 * 
 	 * @param center
@@ -49,7 +75,8 @@ public class MandelbrotConfig{
 	 * @param old
 	 */
 	public MandelbrotConfig(Double center, double zoom, int maxDwell, MandelbrotConfig old) {
-		this.center = center;
+		this.x = center.x;
+		this.y = center.y;
 		this.zoom = zoom;
 		this.maxDwell = maxDwell;
 		this.palette = old.palette;

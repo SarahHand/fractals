@@ -2,6 +2,9 @@ package com.sarahhand.fractals.model;
 
 import java.awt.Color;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Class that stores a color palette.
  * 
@@ -14,7 +17,7 @@ public class ColorPalette{
 	/**
 	 * the default rainbow color palette
 	 */
-	static final ColorPalette DEFAULT_PALETTE;
+	private static final ColorPalette DEFAULT_PALETTE;
 	
 	/**
 	 * 
@@ -33,9 +36,14 @@ public class ColorPalette{
 		DEFAULT_PALETTE = new ColorPalette(palette);
 	}
 
-	private Color[] palette;
+	public Color[] getPalette(){
+		return palette;
+	}
 
-	public ColorPalette(Color[] palette){
+	private Color[] palette;
+	
+	@JsonCreator
+	public ColorPalette(@JsonProperty("palette") Color[] palette){
 		this.palette = palette;
 	}
 

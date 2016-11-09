@@ -9,6 +9,9 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Implements <code>MandelbrotViewer</code>.
  * 
@@ -17,22 +20,13 @@ import java.awt.image.BufferedImage;
  */
 
 class MandelbrotViewerImpl implements MandelbrotViewer{
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private static final double LOG2 = Math.log(2);
 	private static final int MIN_SIZE = 10;
 	public static final int MAX_Z = 1000;
 	
 	private MandelbrotConfig config;
-
-	@Override
-	public void setConfig(MandelbrotConfig config){
-		this.config = config;
-	}
-
-	@Override
-	public MandelbrotConfig getConfig(){
-		return config;
-	}
 	
 	@Override
 	public Image getView(Dimension dimensions){
@@ -44,7 +38,8 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 		
 		renderRect(g, new Rectangle(dimensions), dimensions, MIN_SIZE);
 		
-		System.out.println("Time: " + ((System.currentTimeMillis()-time)/1000) + "(secs)");
+		log.debug("Time to generate Mandelbrot image: {}ms.", System.currentTimeMillis()-time);
+		
 		return image;
 	}
 	
@@ -115,6 +110,16 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 		return new Double(transformedX, transformedY);
 	}
 
+	@Override
+	public void setConfig(MandelbrotConfig config){
+		this.config = config;
+	}
+
+	@Override
+	public MandelbrotConfig getConfig(){
+		return config;
+	}
+
 	MandelbrotViewerImpl(MandelbrotConfig config){
 		this.config = config;
 	}
@@ -180,7 +185,7 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 		return new Color((int)r, (int)g, (int)b);
 	}
 	
-	private class ComplexNumber{
+	private static class ComplexNumber{
 		
 		double x;
 		double y;

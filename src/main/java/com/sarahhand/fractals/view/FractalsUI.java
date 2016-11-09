@@ -11,10 +11,11 @@ import java.awt.geom.Point2D.Double;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.sarahhand.fractals.model.ColorPalette;
+import com.sarahand.fractals.json.ConfigSaverLoader;
 import com.sarahhand.fractals.model.MandelbrotConfig;
 import com.sarahhand.fractals.model.MandelbrotViewer;
 import com.sarahhand.fractals.model.MandelbrotViewerFactory;
@@ -36,8 +37,6 @@ public class FractalsUI implements ActionListener, MouseListener {
 
 	private JButton saveImage;
 	private JButton loadImage;
-
-	private ColorPalette palette;
 
 	private final int FRAME_WIDTH = 800;
 	private final int FRAME_HEIGHT = 700;
@@ -105,10 +104,19 @@ public class FractalsUI implements ActionListener, MouseListener {
 	 * (Saves the image, and loads the image)
 	 */
 	public void actionPerformed(ActionEvent ae) {
+		ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
+		JFileChooser fileChooser = new JFileChooser();
 		if(ae.getSource() == saveImage) {
-
+			if(fileChooser.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
+				saverLoader.save(mandelConfig, fileChooser.getSelectedFile().getAbsolutePath());
+			}
 		} else if(ae.getSource() == loadImage) {	
-
+			if(fileChooser.showDialog(null, "Load") == JFileChooser.APPROVE_OPTION) {
+				mandelConfig = (MandelbrotConfig)saverLoader.load(mandelConfig, fileChooser.getSelectedFile().getAbsolutePath());
+				viewer.setConfig(mandelConfig);
+				image.setImage(viewer.getView(frameDimension));
+				frame.repaint();
+			}
 		}
 	}
 
@@ -141,6 +149,7 @@ public class FractalsUI implements ActionListener, MouseListener {
 
 	public void mousePressed(MouseEvent me) {}
 
+	@SuppressWarnings("unused")
 	public static void main(String args[]) {
 		FractalsUI ui = new FractalsUI();
 	}

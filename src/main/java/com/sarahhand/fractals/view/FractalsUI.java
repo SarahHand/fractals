@@ -3,11 +3,14 @@ package com.sarahhand.fractals.view;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D.Double;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -18,19 +21,23 @@ import com.sarahhand.fractals.model.MandelbrotViewerFactory;
 
 /** This class will display the Mandelbrot set and allow you to do a variety of other things.
  * 
- * @author mhand
+ * @author M00031
  *
  */
-public class FractalsUI implements MouseListener {
+public class FractalsUI implements ActionListener, MouseListener {
 
 	private JFrame frame;
 	private Dimension frameDimension;
 	MandelbrotViewerFactory viewerFactory;
 	MandelbrotViewer viewer;
 	private MandelbrotConfig mandelConfig;
-	private ColorPalette palette;
 	private ImageIcon image;
 	private JLabel imageLabel;
+
+	private JButton saveImage;
+	private JButton loadImage;
+
+	private ColorPalette palette;
 
 	private final int FRAME_WIDTH = 800;
 	private final int FRAME_HEIGHT = 700;
@@ -41,23 +48,38 @@ public class FractalsUI implements MouseListener {
 	private final int LEFT_CLICK = 1;
 	private final int RIGHT_CLICK = 3;
 
+	/** This method sets up the UI for the 
+	 */
 	public FractalsUI() {
 		frame = new JFrame("Fractal Viewer");
-		
 		frame.setLayout(new FlowLayout());
 		frameDimension = new Dimension(FRAME_WIDTH, FRAME_HEIGHT);
-		viewerFactory = new MandelbrotViewerFactory();
 		frame.setSize(frameDimension);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		viewerFactory = new MandelbrotViewerFactory();
 		viewer = viewerFactory.createViewer();
 		mandelConfig = viewer.getConfig();
 		image = new ImageIcon(viewer.getView(frameDimension));
 		imageLabel = new JLabel(image);
+
+		saveImage = new JButton("Save");
+		loadImage = new JButton("Load");
+
+		saveImage.addActionListener(this);
+		loadImage.addActionListener(this);
+
 		frame.add(imageLabel);
+		frame.add(saveImage);
+		frame.add(loadImage);
+
 		frame.addMouseListener(this);
+
+		frame.pack();
 		frame.setVisible(true);
 	}
-	
+
 	/** Creates a new MandelbrotConfig using the existing one. The new config will have a new center and zoom.
 	 * 
 	 * @param frameDimension
@@ -78,6 +100,18 @@ public class FractalsUI implements MouseListener {
 		int newMaxDwell = mandelConfig.getMaxDwell() + maxDwellOffset;
 		return new MandelbrotConfig(newCenter, newZoom, newMaxDwell, mandelConfig);
 	}
+
+	/** Executes the corresponding tasks for the saveImage and loadImage buttons.
+	 * (Saves the image, and loads the image)
+	 */
+	public void actionPerformed(ActionEvent ae) {
+		if(ae.getSource() == saveImage) {
+
+		} else if(ae.getSource() == loadImage) {	
+
+		}
+	}
+
 
 	public void mouseClicked(MouseEvent me) {
 		try {

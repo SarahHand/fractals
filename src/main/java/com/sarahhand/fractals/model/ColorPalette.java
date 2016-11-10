@@ -1,12 +1,9 @@
 package com.sarahhand.fractals.model;
 
 import java.awt.Color;
-import java.util.Arrays;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sarahhand.fractals.mapper.ColorPaletteMapper;
 
 /**
  * Class that stores a color palette.

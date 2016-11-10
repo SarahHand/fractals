@@ -7,6 +7,16 @@ import java.util.Map;
 
 import com.sarahhand.fractals.model.ColorPalette;
 
+/**
+ * Converts several colors into a ColorPalette
+ * 
+ * @see {@link #map(List, List) ColorpaletteMapper.map}
+ * @see ColorPalette
+ * @see Color
+ * 
+ * @author J9465812
+ */
+
 public class ColorPaletteMapper{
 	
 	private static final ColorPaletteMapper defaultMapper = new ColorPaletteMapper();
@@ -17,11 +27,32 @@ public class ColorPaletteMapper{
 	
 	private ColorPaletteMapper(){}
 	
+	/**
+	 * Converts several colors into a complete color palette.
+	 * 
+	 * This method takes a list of colors along with a list of integers 
+	 * that specify where in the palette the colors should occur. It
+	 * then fills in the gaps by blending adjacent colors to create a
+	 * smooth gradient.
+	 * <p>
+	 * This method will throw an <code>IllegalArgumentException</code> if
+	 * these requirements are not met:<ul>
+	 * <li>neither list can be null</li>
+	 * <li>the lists must have equal size</li>
+	 * <li>the positions list must contain both 0 and <code>ColorPalette.COLOR_PALETTE_LENGTH</code></li>
+	 * <li>all items in the positions list must lie between 0 and <code>ColorPalette.COLOR_PALETTE_LENGTH</code> inclusive</li>
+	 * </ul>
+	 * 
+	 * @param colors - the list of colors
+	 * @param positions - the list of positions
+	 * @return the <code>ColorPalette</code> created
+	 * 
+	 * @throws IllegalArgumentException if any of the requirements above are not met
+	 */
+	
 	public ColorPalette map(List<Color> colors, List<Integer> positions){
 		
-		if(errorCases(colors, positions)){
-			return null;
-		}
+		errorCases(colors, positions);
 		
 		Map<Integer, Color> map = new HashMap<>();
 		
@@ -51,18 +82,22 @@ public class ColorPaletteMapper{
 		return new ColorPalette(palette);
 	}
 	
-	private boolean errorCases(List<Color> colors, List<Integer> positions){
+	private void errorCases(List<Color> colors, List<Integer> positions){
 		
 		if(colors == null){
-			return true;
+			throw new IllegalArgumentException("Colors null.");
 		}
 		
 		if(positions == null){
-			return true;
+			throw new IllegalArgumentException("Positions null.");
 		}
 		
 		if(colors.size() != positions.size()){
-			return true;
+			throw new IllegalArgumentException("Lists of unequal sizes.");
+		}
+		
+		if(!positions.contains(0) || !positions.contains(ColorPalette.COLOR_PALETTE_LENGTH)){
+			throw new IllegalArgumentException("Required positions not found: 0 and " + ColorPalette.COLOR_PALETTE_LENGTH);
 		}
 		
 		for(int n = 0; n < colors.size(); n++){
@@ -70,11 +105,9 @@ public class ColorPaletteMapper{
 			int pos = positions.get(n);
 			
 			if(pos < 0 || pos > ColorPalette.COLOR_PALETTE_LENGTH){
-				return true;
+				throw new IllegalArgumentException("Positions contains an integer outside of [0, " + ColorPalette.COLOR_PALETTE_LENGTH + "].");
 			}
 		}
-		
-		return false;
 	}
 	
 	private Color[] gradiate(Color col1, Color col2, int length){

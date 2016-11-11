@@ -19,9 +19,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import com.sarahand.fractals.json.ConfigSaverLoader;
+import com.sarahhand.fractals.model.FractalConfig;
+import com.sarahhand.fractals.model.FractalType;
+import com.sarahhand.fractals.model.FractalViewer;
+import com.sarahhand.fractals.model.FractalViewerFactory;
 import com.sarahhand.fractals.model.MandelbrotConfig;
-import com.sarahhand.fractals.model.MandelbrotViewer;
-import com.sarahhand.fractals.model.MandelbrotViewerFactory;
 
 /** This class will display the Mandelbrot set and allow you to do a variety of other things.
  * 
@@ -32,9 +34,9 @@ public class FractalsUI {
 
 	JFrame frame;
 	Dimension frameDimension;
-	MandelbrotViewerFactory viewerFactory;
-	MandelbrotViewer viewer;
-	MandelbrotConfig mandelConfig;
+	FractalViewerFactory viewerFactory;
+	FractalViewer viewer;
+	FractalConfig fractalConfig;
 	ImageIcon image;
 	private JLabel imageLabel;
 
@@ -54,9 +56,9 @@ public class FractalsUI {
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		viewerFactory = new MandelbrotViewerFactory();
-		viewer = viewerFactory.createViewer();
-		mandelConfig = viewer.getConfig();
+		viewerFactory = new FractalViewerFactory();
+		viewer = viewerFactory.createViewer(FractalType.MANDELBROT_SET);
+		fractalConfig = viewer.getConfig();
 		image = new ImageIcon(viewer.getView(frameDimension));
 		imageLabel = new JLabel(image);
 
@@ -99,12 +101,12 @@ public class FractalsUI {
 				double zoomFactor, int maxDwellOffset) {
 			double mouseX = xPos - frameDimension.getWidth() / 2;
 			double mouseY = frameDimension.getHeight() / 2 - yPos;
-			double centerX = mandelConfig.getCenter().x + mouseX / mandelConfig.getZoom();
-			double centerY = mandelConfig.getCenter().y + mouseY / mandelConfig.getZoom();
+			double centerX = fractalConfig.getCenter().x + mouseX / fractalConfig.getZoom();
+			double centerY = fractalConfig.getCenter().y + mouseY / fractalConfig.getZoom();
 			Double newCenter = new Double(centerX, centerY);
-			double newZoom = mandelConfig.getZoom() * zoomFactor;
-			int newMaxDwell = mandelConfig.getMaxDwell() + maxDwellOffset;
-			return new MandelbrotConfig(newCenter, newZoom, newMaxDwell, mandelConfig);
+			double newZoom = fractalConfig.getZoom() * zoomFactor;
+			int newMaxDwell = fractalConfig.getMaxDwell() + maxDwellOffset;
+			return new MandelbrotConfig(newCenter, newZoom, newMaxDwell, (MandelbrotConfig)fractalConfig);
 		}
 		
 		/** Zooms in and out depending on whether the left button or the right button respectively are clicked.
@@ -116,13 +118,13 @@ public class FractalsUI {
 				int mouseX = me.getX();
 				int mouseY = me.getY();
 				if(buttonType == LEFT_CLICK) {
-					mandelConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_IN_FACTOR,
+					fractalConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_IN_FACTOR,
 							MAX_DWELL_INCREASE);
 				} else if(buttonType == RIGHT_CLICK) {
-					mandelConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_OUT_FACTOR,
+					fractalConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_OUT_FACTOR,
 							MAX_DWELL_DECREASE);
 				}
-				viewer.setConfig(mandelConfig);
+				viewer.setConfig(fractalConfig);
 				image.setImage(viewer.getView(frameDimension));
 				frame.repaint();
 			} finally {
@@ -171,7 +173,7 @@ public class FractalsUI {
 			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
 			JFileChooser fileChooser = new JFileChooser();
 			if(fileChooser.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
-				saverLoader.save(mandelConfig, fileChooser.getSelectedFile().getAbsolutePath());
+				saverLoader.save(fractalConfig, fileChooser.getSelectedFile().getAbsolutePath());
 			}
 		}
 	}
@@ -182,8 +184,8 @@ public class FractalsUI {
 			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
 			JFileChooser fileChooser = new JFileChooser();
 			if(fileChooser.showDialog(null, "Load") == JFileChooser.APPROVE_OPTION) {
-				mandelConfig = (MandelbrotConfig)saverLoader.load(mandelConfig, fileChooser.getSelectedFile().getAbsolutePath());
-				viewer.setConfig(mandelConfig);
+				fractalConfig = (MandelbrotConfig)saverLoader.load(fractalConfig.getClass(), fileChooser.getSelectedFile().getAbsolutePath());
+				viewer.setConfig(fractalConfig);
 				image.setImage(viewer.getView(frameDimension));
 				frame.repaint();
 			}

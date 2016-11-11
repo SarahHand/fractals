@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
  * Implements <code>MandelbrotViewer</code>.
  * 
  * @author J9465812
- * @see MandelbrotViewer
+ * @see FractalViewer
  */
 
-class MandelbrotViewerImpl implements MandelbrotViewer{
+class MandelbrotViewerImpl implements FractalViewer{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private static final double LOG2 = Math.log(2);
@@ -138,17 +138,25 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 	}
 
 	@Override
-	public void setConfig(MandelbrotConfig config){
-		this.config = config;
+	public void setConfig(FractalConfig config){
+		if (config instanceof MandelbrotConfig) {
+			this.config = (MandelbrotConfig)config;
+		} else {
+			throw new IllegalArgumentException("MandlebrotViewer can only be updated with MandelbrotConfig.");
+		}
 	}
 
 	@Override
-	public MandelbrotConfig getConfig(){
+	public FractalConfig getConfig(){
 		return config;
 	}
 
-	MandelbrotViewerImpl(MandelbrotConfig config){
-		this.config = config;
+	MandelbrotViewerImpl(FractalConfig config){
+		if (config instanceof MandelbrotConfig) {
+			this.config = (MandelbrotConfig)config;
+		} else {
+			throw new IllegalArgumentException("MandlebrotViewer can only be created with MandelbrotConfig.");
+		}
 	}
 	
 	private Color getPointCol(Double p){

@@ -54,5 +54,7 @@ public class ConfigSaverLoaderTest{
 		assertThat(config.getCenter(), Matchers.equalTo(MandelbrotConfig.DEAFAULT_CONFIG.getCenter()));
 		assertThat(config.getZoom(), Matchers.equalTo(MandelbrotConfig.DEAFAULT_CONFIG.getZoom()));
 		assertThat(config.getMaxDwell(), Matchers.equalTo(MandelbrotConfig.DEAFAULT_CONFIG.getMaxDwell()));
+		
+		scan.close();
 	}
 }

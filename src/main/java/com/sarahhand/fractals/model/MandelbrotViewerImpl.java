@@ -158,7 +158,7 @@ class MandelbrotViewerImpl implements FractalViewer{
 				
 				double interpolateValue = (double)n + 1.0 - nu;
 				
-				interpolateValue = Math.log(interpolateValue)/Math.log(1.01);
+				interpolateValue = Math.log(Math.abs(interpolateValue))/Math.log(1.01);
 				
 				Color col1 = config.getPalette().getColor(((int)(Math.floor(interpolateValue)) %
 						ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %

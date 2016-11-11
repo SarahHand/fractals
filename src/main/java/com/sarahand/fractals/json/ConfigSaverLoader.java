@@ -11,9 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.sarahhand.fractals.model.Config;
+import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.json.JsonReaderWriter;
 
+/**
+ * Class for loading FractalConfigs.
+ */
 public class ConfigSaverLoader{
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -26,27 +29,46 @@ public class ConfigSaverLoader{
 		return DEFAULT;
 	}
 
-	public Config load(Config config, String fileName){
+	/**
+	 * Loads the fractal config from the specified file (fileName) and
+	 * returns it. 
+	 * @param target
+	 * @param fileName
+	 * @return
+	 */
+	public FractalConfig load(Class<? extends FractalConfig> target, String fileName){
 
 		try(InputStream fis = new FileInputStream(fileName);) {
-			return load(config.getClass(), fis);
+			return load(target, fis);
 		} catch(IOException e) {
 			log.error("IOException thrown from loading file", e);
 		}
 		
-		return config;
+		return null;
 	}
 
-	public Config load(Class<? extends Config> target, InputStream stream){
+	/**
+	 * Loads the fractal config from the specified stream and returns it.
+	 * @param target
+	 * @param stream
+	 * @return
+	 */
+	public FractalConfig load(Class<? extends FractalConfig> target, InputStream stream){
 
 		JsonReaderWriter readerWriter = new JsonReaderWriter(PropertyNamingStrategy.SNAKE_CASE);
 
-		Config config = readerWriter.<Config>read(stream, target);
+		FractalConfig config = readerWriter.<FractalConfig>read(stream, target);
 
 		return config;
 	}
 
-	public boolean save(Config config, String fileName){
+	/**
+	 * Saves the specified fractal config to the specified file (fileName).
+	 * @param config
+	 * @param fileName
+	 * @return
+	 */
+	public boolean save(FractalConfig config, String fileName){
 
 		File file = new File(fileName);
 
@@ -61,7 +83,7 @@ public class ConfigSaverLoader{
 
 		try (OutputStream fos = new FileOutputStream(fileName);){
 
-			readerWriter.<Config>write(config, fos);
+			readerWriter.<FractalConfig>write(config, fos);
 		}catch (IOException e1){
 			// ^^^^^ this will never happen because of line 42...
 			return false; // ...but just in case...

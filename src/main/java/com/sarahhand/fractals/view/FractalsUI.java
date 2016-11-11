@@ -3,10 +3,13 @@ package com.sarahhand.fractals.view;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D.Double;
 
 import javax.swing.ImageIcon;
@@ -73,7 +76,7 @@ public class FractalsUI {
 		frame.setVisible(true);
 	}
 	
-	private class FractalsMouseListener implements MouseListener {
+	private class FractalsMouseListener implements MouseListener, MouseMotionListener {
 
 		private final double ZOOM_IN_FACTOR = 5;
 		private final double ZOOM_OUT_FACTOR = 1 / ZOOM_IN_FACTOR;
@@ -130,10 +133,36 @@ public class FractalsUI {
 		public void mouseEntered(MouseEvent me) {}
 
 		public void mouseExited(MouseEvent me) {}
+		
+		private boolean isDragging = false;
+		private Point draggingStartPos;
+		
+		public void mouseReleased(MouseEvent me) {
+			isDragging = true;
+			draggingStartPos = me.getPoint();
+		}
 
-		public void mouseReleased(MouseEvent me) {}
+		public void mousePressed(MouseEvent me) {
+			isDragging = false;
+		}
 
-		public void mousePressed(MouseEvent me) {}
+		@Override
+		public void mouseDragged(MouseEvent me){
+			
+			MandelbrotConfig oldConfig = mandelConfig;
+			Image oldImage = image.getImage();
+			
+			int xChange = draggingStartPos.x - me.getX();
+			int yChange = me.getY() - draggingStartPos.y;
+			mandelConfig = createNewConfig(frameDimension, xChange, yChange, ZOOM_IN_FACTOR, MAX_DWELL_INCREASE);
+			
+			viewer.setConfig(mandelConfig);
+			//image.setImage(viewer.getViewPanning(frameDimension, oldConfig, oldImage));
+			frame.repaint();
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent me){}
 	}
 	
 	private class SaveConfigActionListener implements ActionListener {

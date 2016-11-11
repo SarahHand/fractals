@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.sarahhand.fractals.model.Config;
-import com.sarahhand.fractals.model.MandelbrotConfig;
 import com.sarahhand.json.JsonReaderWriter;
 
 public class ConfigSaverLoader{
@@ -29,12 +28,11 @@ public class ConfigSaverLoader{
 
 	public Config load(Config config, String fileName){
 
-		JsonReaderWriter readerWriter = new JsonReaderWriter(PropertyNamingStrategy.SNAKE_CASE);
-
 		try(InputStream fis = new FileInputStream(fileName);) {
-			Config newConfig = readerWriter.<Config>read(fis, MandelbrotConfig.class);
-			return newConfig;
-		} catch(Exception e) {}
+			return load(config.getClass(), fis);
+		} catch(IOException e) {
+			log.error("IOException thrown from loading file", e);
+		}
 		
 		return config;
 	}

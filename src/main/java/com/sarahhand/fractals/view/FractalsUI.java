@@ -25,29 +25,23 @@ import com.sarahhand.fractals.model.MandelbrotViewerFactory;
  * @author M00031
  *
  */
-public class FractalsUI implements ActionListener, MouseListener {
+public class FractalsUI {
 
-	private JFrame frame;
-	private Dimension frameDimension;
+	JFrame frame;
+	Dimension frameDimension;
 	MandelbrotViewerFactory viewerFactory;
 	MandelbrotViewer viewer;
-	private MandelbrotConfig mandelConfig;
-	private ImageIcon image;
+	MandelbrotConfig mandelConfig;
+	ImageIcon image;
 	private JLabel imageLabel;
 
-	private JButton saveImage;
-	private JButton loadImage;
+	private JButton saveFractalConfig;
+	private JButton loadFractalConfig;
 
-	private final int FRAME_WIDTH = 800;
-	private final int FRAME_HEIGHT = 700;
-	private final double ZOOM_IN_FACTOR = 5;
-	private final double ZOOM_OUT_FACTOR = 1 / ZOOM_IN_FACTOR;
-	private final int MAX_DWELL_INCREASE = 200;
-	private final int MAX_DWELL_DECREASE = -MAX_DWELL_INCREASE;
-	private final int LEFT_CLICK = 1;
-	private final int RIGHT_CLICK = 3;
+	final int FRAME_WIDTH = 800;
+	final int FRAME_HEIGHT = 700;
 
-	/** This method sets up the UI for the 
+	/** This method sets up the UI for the Mandelbrot Set Viewer.
 	 */
 	public FractalsUI() {
 		frame = new JFrame("Fractal Viewer");
@@ -63,54 +57,101 @@ public class FractalsUI implements ActionListener, MouseListener {
 		image = new ImageIcon(viewer.getView(frameDimension));
 		imageLabel = new JLabel(image);
 
-		saveImage = new JButton("Save");
-		loadImage = new JButton("Load");
-
-		saveImage.addActionListener(this);
-		loadImage.addActionListener(this);
+		saveFractalConfig = new JButton("Save");
+		loadFractalConfig = new JButton("Load");
+		
+		saveFractalConfig.addActionListener(new SaveConfigActionListener());
+		loadFractalConfig.addActionListener(new LoadConfigActionListener());
 
 		frame.add(imageLabel);
-		frame.add(saveImage);
-		frame.add(loadImage);
+		frame.add(saveFractalConfig);
+		frame.add(loadFractalConfig);
 
-		frame.addMouseListener(this);
+		frame.addMouseListener(new FractalsMouseListener());
 
 		frame.pack();
 		frame.setVisible(true);
 	}
+	
+	private class FractalsMouseListener implements MouseListener {
 
-	/** Creates a new MandelbrotConfig using the existing one. The new config will have a new center and zoom.
-	 * 
-	 * @param frameDimension
-	 * @param xPos
-	 * @param yPos
-	 * @param zoomFactor
-	 * @param maxDwellOffset
-	 * @return
-	 */
-	private MandelbrotConfig createNewConfig(Dimension frameDimension, int xPos, int yPos,
-			double zoomFactor, int maxDwellOffset) {
-		double mouseX = xPos - frameDimension.getWidth() / 2;
-		double mouseY = frameDimension.getHeight() / 2 - yPos;
-		double centerX = mandelConfig.getCenter().x + mouseX / mandelConfig.getZoom();
-		double centerY = mandelConfig.getCenter().y + mouseY / mandelConfig.getZoom();
-		Double newCenter = new Double(centerX, centerY);
-		double newZoom = mandelConfig.getZoom() * zoomFactor;
-		int newMaxDwell = mandelConfig.getMaxDwell() + maxDwellOffset;
-		return new MandelbrotConfig(newCenter, newZoom, newMaxDwell, mandelConfig);
+		private final double ZOOM_IN_FACTOR = 5;
+		private final double ZOOM_OUT_FACTOR = 1 / ZOOM_IN_FACTOR;
+		private final int MAX_DWELL_INCREASE = 200;
+		private final int MAX_DWELL_DECREASE = -MAX_DWELL_INCREASE;
+		private final int LEFT_CLICK = 1;
+		private final int RIGHT_CLICK = 3;
+		
+		/** Creates a new MandelbrotConfig using the existing one.
+		 * The new configuration will have a new center and zoom.
+		 * 
+		 * @param frameDimension
+		 * @param xPos
+		 * @param yPos
+		 * @param zoomFactor
+		 * @param maxDwellOffset
+		 * @return
+		 */
+		private MandelbrotConfig createNewConfig(Dimension frameDimension, int xPos, int yPos,
+				double zoomFactor, int maxDwellOffset) {
+			double mouseX = xPos - frameDimension.getWidth() / 2;
+			double mouseY = frameDimension.getHeight() / 2 - yPos;
+			double centerX = mandelConfig.getCenter().x + mouseX / mandelConfig.getZoom();
+			double centerY = mandelConfig.getCenter().y + mouseY / mandelConfig.getZoom();
+			Double newCenter = new Double(centerX, centerY);
+			double newZoom = mandelConfig.getZoom() * zoomFactor;
+			int newMaxDwell = mandelConfig.getMaxDwell() + maxDwellOffset;
+			return new MandelbrotConfig(newCenter, newZoom, newMaxDwell, mandelConfig);
+		}
+		
+		/** Zooms in and out depending on whether the left button or the right button respectively are clicked.
+		 */
+		public void mouseClicked(MouseEvent me) {
+			try {
+				frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				int buttonType = me.getButton();
+				int mouseX = me.getX();
+				int mouseY = me.getY();
+				if(buttonType == LEFT_CLICK) {
+					mandelConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_IN_FACTOR,
+							MAX_DWELL_INCREASE);
+				} else if(buttonType == RIGHT_CLICK) {
+					mandelConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_OUT_FACTOR,
+							MAX_DWELL_DECREASE);
+				}
+				viewer.setConfig(mandelConfig);
+				image.setImage(viewer.getView(frameDimension));
+				frame.repaint();
+			} finally {
+				frame.setCursor(Cursor.getDefaultCursor());
+			}
+		}
+
+		public void mouseEntered(MouseEvent me) {}
+
+		public void mouseExited(MouseEvent me) {}
+
+		public void mouseReleased(MouseEvent me) {}
+
+		public void mousePressed(MouseEvent me) {}
 	}
-
-	/** Executes the corresponding tasks for the saveImage and loadImage buttons.
-	 * (Saves the image, and loads the image)
-	 */
-	public void actionPerformed(ActionEvent ae) {
-		ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
-		JFileChooser fileChooser = new JFileChooser();
-		if(ae.getSource() == saveImage) {
+	
+	private class SaveConfigActionListener implements ActionListener {
+		
+		public void actionPerformed(ActionEvent ae) {
+			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
+			JFileChooser fileChooser = new JFileChooser();
 			if(fileChooser.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
 				saverLoader.save(mandelConfig, fileChooser.getSelectedFile().getAbsolutePath());
 			}
-		} else if(ae.getSource() == loadImage) {	
+		}
+	}
+	
+	private class LoadConfigActionListener implements ActionListener {
+		
+		public void actionPerformed(ActionEvent ae) {
+			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
+			JFileChooser fileChooser = new JFileChooser();
 			if(fileChooser.showDialog(null, "Load") == JFileChooser.APPROVE_OPTION) {
 				mandelConfig = (MandelbrotConfig)saverLoader.load(mandelConfig, fileChooser.getSelectedFile().getAbsolutePath());
 				viewer.setConfig(mandelConfig);
@@ -119,36 +160,7 @@ public class FractalsUI implements ActionListener, MouseListener {
 			}
 		}
 	}
-
-
-	public void mouseClicked(MouseEvent me) {
-		try {
-			frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			int buttonType = me.getButton();
-			int mouseX = me.getX();
-			int mouseY = me.getY();
-			if(buttonType == LEFT_CLICK) {
-				mandelConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_IN_FACTOR, MAX_DWELL_INCREASE);
-			} else if(buttonType == RIGHT_CLICK) {
-				mandelConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_OUT_FACTOR, MAX_DWELL_DECREASE);
-			}
-			viewer.setConfig(mandelConfig);
-			image.setImage(viewer.getView(frameDimension));
-			// repaint refreshes the frame
-			frame.repaint();
-		} finally {
-			frame.setCursor(Cursor.getDefaultCursor());
-		}
-	}
-
-	public void mouseEntered(MouseEvent me) {}
-
-	public void mouseExited(MouseEvent me) {}
-
-	public void mouseReleased(MouseEvent me) {}
-
-	public void mousePressed(MouseEvent me) {}
-
+	
 	@SuppressWarnings("unused")
 	public static void main(String args[]) {
 		FractalsUI ui = new FractalsUI();

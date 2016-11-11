@@ -43,6 +43,33 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 		return image;
 	}
 	
+	public Image getViewPanning(Dimension dimensions, MandelbrotConfig oldConfig, Image oldImage){
+		
+		long time = System.currentTimeMillis();
+		
+		BufferedImage image = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = image.createGraphics();
+		
+		int x = (int)((oldConfig.getCenter().x-config.getCenter().x)*config.getZoom());
+		int y = (int)((config.getCenter().y-oldConfig.getCenter().y)*config.getZoom());
+		
+		g.drawImage(oldImage, x, y, null);
+		
+		Rectangle predrawnPoints = new Rectangle(x, y, oldImage.getWidth(null), oldImage.getHeight(null));
+		
+		for(int m = 0; m < dimensions.width; m++){
+			for(int n = 0; n < dimensions.width; n++){
+				if(!predrawnPoints.contains(m, n)){
+					renderPoint(new Point(m, n), g, dimensions);
+				}
+			}
+		}
+		
+		log.debug("Time to generate Mandelbrot image: {}ms.", System.currentTimeMillis()-time);
+		
+		return image;
+	}
+	
 	private void renderRect(Graphics2D g2d, Rectangle rect, Dimension dimensions, int minSize){
 		
 		if(rect.width < minSize || rect.height < minSize){

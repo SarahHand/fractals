@@ -150,7 +150,7 @@ class MandelbrotViewerImpl implements MandelbrotViewer{
 				
 				double interpolateValue = (double)n + 1.0 - nu;
 				
-				interpolateValue *= 10;
+				interpolateValue = Math.log(Math.abs(interpolateValue))/Math.log(1.01);
 				
 				Color col1 = config.getPalette().getColor(((int)(Math.floor(interpolateValue)) %
 						ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %

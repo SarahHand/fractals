@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import com.sarahand.fractals.json.ConfigSaverLoader;
+import com.sarahhand.fractals.colorpalette.ChangeColorPalette;
 import com.sarahhand.fractals.model.MandelbrotConfig;
 import com.sarahhand.fractals.model.MandelbrotViewer;
 import com.sarahhand.fractals.model.MandelbrotViewerFactory;
@@ -37,6 +38,7 @@ public class FractalsUI {
 
 	private JButton saveFractalConfig;
 	private JButton loadFractalConfig;
+	private JButton createColorPalette;
 
 	final int FRAME_WIDTH = 800;
 	final int FRAME_HEIGHT = 700;
@@ -59,20 +61,23 @@ public class FractalsUI {
 
 		saveFractalConfig = new JButton("Save");
 		loadFractalConfig = new JButton("Load");
-		
+		createColorPalette = new JButton("Create New Color Palette");
+
 		saveFractalConfig.addActionListener(new SaveConfigActionListener());
 		loadFractalConfig.addActionListener(new LoadConfigActionListener());
+		createColorPalette.addActionListener(new CreateColorPaletteListener());
 
 		frame.add(imageLabel);
 		frame.add(saveFractalConfig);
 		frame.add(loadFractalConfig);
+		frame.add(createColorPalette);
 
 		frame.addMouseListener(new FractalsMouseListener());
 
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
+
 	private class FractalsMouseListener implements MouseListener {
 
 		private final double ZOOM_IN_FACTOR = 5;
@@ -81,7 +86,7 @@ public class FractalsUI {
 		private final int MAX_DWELL_DECREASE = -MAX_DWELL_INCREASE;
 		private final int LEFT_CLICK = 1;
 		private final int RIGHT_CLICK = 3;
-		
+
 		/** Creates a new MandelbrotConfig using the existing one.
 		 * The new configuration will have a new center and zoom.
 		 * 
@@ -103,7 +108,7 @@ public class FractalsUI {
 			int newMaxDwell = mandelConfig.getMaxDwell() + maxDwellOffset;
 			return new MandelbrotConfig(newCenter, newZoom, newMaxDwell, mandelConfig);
 		}
-		
+
 		/** Zooms in and out depending on whether the left button or the right button respectively are clicked.
 		 */
 		public void mouseClicked(MouseEvent me) {
@@ -135,9 +140,13 @@ public class FractalsUI {
 
 		public void mousePressed(MouseEvent me) {}
 	}
-	
+
+	/** This class is the ActionListener for the saveFractalConfig button.
+	 * 
+	 * @author M00031
+	 *
+	 */
 	private class SaveConfigActionListener implements ActionListener {
-		
 		public void actionPerformed(ActionEvent ae) {
 			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
 			JFileChooser fileChooser = new JFileChooser();
@@ -146,9 +155,13 @@ public class FractalsUI {
 			}
 		}
 	}
-	
+
+	/** This class is the ActionListener for the loadFractalConfig button.
+	 * 
+	 * @author M00031
+	 *
+	 */
 	private class LoadConfigActionListener implements ActionListener {
-		
 		public void actionPerformed(ActionEvent ae) {
 			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
 			JFileChooser fileChooser = new JFileChooser();
@@ -160,9 +173,44 @@ public class FractalsUI {
 			}
 		}
 	}
-	
-	@SuppressWarnings("unused")
+
+	/** This class is the ActionListener for the createColorPalette button.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class CreateColorPaletteListener implements ActionListener {
+		public void actionPerformed(ActionEvent ae) {
+			ChangeColorPalette changeCP = new ChangeColorPalette();
+			Thread changePaletteThread = new Thread(new ChangePaletteRunnable(changeCP));
+			changePaletteThread.start();			
+		}
+	}
+
+	/** This lets the ChangeColorPalette frame run on a different Thread.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class ChangePaletteRunnable implements Runnable {
+
+		private ChangeColorPalette changeCP;
+
+		public ChangePaletteRunnable(ChangeColorPalette changeCP) {
+			this.changeCP = changeCP;
+		}
+
+		public void run() {
+			while (changeCP.getCreatedColorPalette() == null) {}
+			mandelConfig = new MandelbrotConfig(mandelConfig.getCenter(),
+					mandelConfig.getZoom(), changeCP.getCreatedColorPalette(), mandelConfig.getMaxDwell());
+			viewer.setConfig(mandelConfig);
+			image.setImage(viewer.getView(frameDimension));
+			frame.repaint();
+		}
+	}
+
 	public static void main(String args[]) {
-		FractalsUI ui = new FractalsUI();
+		new FractalsUI();
 	}
 }

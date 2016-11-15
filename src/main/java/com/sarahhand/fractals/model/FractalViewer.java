@@ -18,9 +18,18 @@ public interface FractalViewer{
 	 * Generates an image of the fractal based on its current fractal config
 	 * and the specified dimensions.
 	 * @param dimensions
-	 * @return
 	 */
 	public Image getView(Dimension dimensions);
+	
+	/**
+	 * Generates an image of the fractal based on its current fractal config
+	 * and the specified dimensions, while taking advantage of pixels previously
+	 * rendered in oldImage.
+	 * @param dimensions
+	 * @param oldConfig the config used to generate oldImage
+	 * @param oldImage the previous image
+	 */
+	public Image getViewPanning(Dimension dimensions, FractalConfig oldConfig, Image oldImage);
 
 	/**
 	 * Updates the fractal's current config to that specified.

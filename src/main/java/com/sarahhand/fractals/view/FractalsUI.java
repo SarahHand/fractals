@@ -18,6 +18,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sarahand.fractals.json.ConfigSaverLoader;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.FractalType;
@@ -31,7 +34,9 @@ import com.sarahhand.fractals.model.MandelbrotConfig;
  *
  */
 public class FractalsUI {
-
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	JFrame frame;
 	Dimension frameDimension;
 	FractalViewerFactory viewerFactory;
@@ -71,8 +76,10 @@ public class FractalsUI {
 		frame.add(imageLabel);
 		frame.add(saveFractalConfig);
 		frame.add(loadFractalConfig);
-
-		frame.addMouseListener(new FractalsMouseListener());
+		
+		FractalsMouseListener mouseListener = new FractalsMouseListener();
+		frame.addMouseListener(mouseListener);
+		frame.addMouseMotionListener(mouseListener);
 
 		frame.pack();
 		frame.setVisible(true);
@@ -136,31 +143,45 @@ public class FractalsUI {
 
 		public void mouseExited(MouseEvent me) {}
 		
-		private boolean isDragging = false;
-		private Point draggingStartPos;
+		private Point draggingPos;
 		
 		public void mouseReleased(MouseEvent me) {
-			isDragging = true;
-			draggingStartPos = me.getPoint();
+			image.setImage(viewer.getView(frameDimension));
+			log.debug("Mouse Released");
+			frame.repaint();
 		}
 
 		public void mousePressed(MouseEvent me) {
-			isDragging = false;
+			
+			log.debug("Start Position: " + me.getX() + " " + me.getY());
+			draggingPos = me.getPoint();
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent me){
 			
-			MandelbrotConfig oldConfig = mandelConfig;
+			FractalConfig oldConfig = fractalConfig;
 			Image oldImage = image.getImage();
 			
-			int xChange = draggingStartPos.x - me.getX();
-			int yChange = me.getY() - draggingStartPos.y;
-			mandelConfig = createNewConfig(frameDimension, xChange, yChange, ZOOM_IN_FACTOR, MAX_DWELL_INCREASE);
+			int xChange = draggingPos.x - me.getX();
+			int yChange = me.getY() - draggingPos.y;
 			
-			viewer.setConfig(mandelConfig);
-			//image.setImage(viewer.getViewPanning(frameDimension, oldConfig, oldImage));
+			double centerX = fractalConfig.getCenter().x + xChange / fractalConfig.getZoom();
+			double centerY = fractalConfig.getCenter().y + yChange / fractalConfig.getZoom();
+			Double newCenter = new Double(centerX, centerY);
+			fractalConfig =  new MandelbrotConfig(newCenter, fractalConfig.getZoom(), fractalConfig.getMaxDwell(), (MandelbrotConfig)fractalConfig);
+			
+			viewer.setConfig(fractalConfig);
+			image.setImage(viewer.getViewPanning(frameDimension, oldConfig, oldImage));
 			frame.repaint();
+			
+			log.debug("Zoom: " + fractalConfig.getZoom());
+			
+			log.debug("Change: " + xChange + " " + yChange);
+			
+			log.debug("Max Dwell: " + fractalConfig.getMaxDwell());
+			
+			draggingPos = me.getPoint();
 		}
 		
 		@Override

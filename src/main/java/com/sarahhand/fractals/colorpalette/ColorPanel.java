@@ -25,7 +25,7 @@ public class ColorPanel extends JPanel {
 	JSlider colorPosition;
 
 	Color color = Color.WHITE;
-	int position = 100;
+	int position;
 
 	public Color getColor() {
 		return color;
@@ -40,7 +40,7 @@ public class ColorPanel extends JPanel {
 
 		changeColor = new JButton("Change Color");
 		removeColor = new JButton("Remove");
-		colorPosition = new JSlider(0, 200);
+		colorPosition = new JSlider(0, colorPalette.getColorPaletteLength());
 
 		position = colorPosition.getValue();
 

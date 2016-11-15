@@ -39,9 +39,14 @@ public class ChangeColorPalette {
 
 	private final int FRAME_WIDTH = 500;
 	private final int FRAME_HEIGHT = 500;
+	private final int COLOR_PALETTE_LENGTH = 200;
 
 	public ColorPalette getCreatedColorPalette() {
 		return newColorPalette;
+	}
+	
+	public int getColorPaletteLength() {
+		return COLOR_PALETTE_LENGTH;
 	}
 
 	public ChangeColorPalette() {
@@ -129,7 +134,6 @@ public class ChangeColorPalette {
 	private ColorPalette createColorPalette() {
 		List<Color> colors = new ArrayList<>();
 		List<Integer> positions = new ArrayList<>();
-
 		colors.add(changeEndColors.getBackground());
 		positions.add(0);
 		for(int count = 0; count < colorPanels.size(); count++) {
@@ -137,7 +141,7 @@ public class ChangeColorPalette {
 			positions.add(colorPanels.get(count).getPosition());
 		}
 		colors.add(changeEndColors.getBackground());
-		positions.add(200);
+		positions.add(COLOR_PALETTE_LENGTH);
 
 		frame.setVisible(false);
 

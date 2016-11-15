@@ -67,7 +67,7 @@ public class MandelbrotConfig implements Config{
 		this.maxDwell = maxDwell;
 	}
 
-	/** Creates a new MandelbrotConfig using an existing config, a new zoom, and a new center.
+	/** Creates a new MandelbrotConfig using an existing config, a new zoom, a new center, and a new maxDwell.
 	 * 
 	 * @param center
 	 * @param zoom

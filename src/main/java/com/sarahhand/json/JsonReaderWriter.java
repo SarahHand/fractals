@@ -12,6 +12,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+/** This class is used to read and write to JSON files.
+ * 
+ * @author M00031
+ *
+ */
 public class JsonReaderWriter{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -24,6 +29,12 @@ public class JsonReaderWriter{
 		mapper.setPropertyNamingStrategy(pns);
 	}
 	
+	/** This creates an object out using a JSON file.
+	 * 
+	 * @param stream
+	 * @param target
+	 * @return
+	 */
 	public <T> T read(InputStream stream, Class<? extends T> target) {
 		try {
 			T object = mapper.readValue(stream, target);
@@ -34,6 +45,11 @@ public class JsonReaderWriter{
 		return null;
 	}
 	
+	/** This creates a JSON file using an object.
+	 * 
+	 * @param object
+	 * @param output
+	 */
 	public <T> void write(T object, OutputStream output){
 		try{
 			mapper.writeValue(output, object);

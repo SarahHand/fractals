@@ -8,12 +8,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D.Double;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sarahand.fractals.json.ConfigSaverLoader;
 import com.sarahhand.fractals.colorpalette.ChangeColorPalette;
@@ -30,6 +36,8 @@ import com.sarahhand.fractals.model.MandelbrotConfig;
  */
 public class FractalsUI {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
 	JFrame frame;
 	Dimension frameDimension;
 	FractalViewerFactory viewerFactory;
@@ -40,6 +48,7 @@ public class FractalsUI {
 
 	private JButton saveFractalConfig;
 	private JButton loadFractalConfig;
+	private JButton saveImage;
 	private JButton createColorPalette;
 
 	final int FRAME_WIDTH = 800;
@@ -63,16 +72,19 @@ public class FractalsUI {
 
 		saveFractalConfig = new JButton("Save");
 		loadFractalConfig = new JButton("Load");
+		saveImage = new JButton("Save Screenshot");
 		createColorPalette = new JButton("Create New Color Palette");
 
 		saveFractalConfig.addActionListener(new SaveConfigActionListener());
 		loadFractalConfig.addActionListener(new LoadConfigActionListener());
+		saveImage.addActionListener(new SaveImageActionListener());
 		createColorPalette.addActionListener(new CreateColorPaletteListener());
 
 		frame.add(imageLabel);
 		frame.add(saveFractalConfig);
 		frame.add(loadFractalConfig);
 		frame.add(createColorPalette);
+		frame.add(saveImage);
 
 		frame.addMouseListener(new FractalsMouseListener());
 
@@ -80,6 +92,11 @@ public class FractalsUI {
 		frame.setVisible(true);
 	}
 
+	/** This class is the MouseListener for the frame. It is used for zooming in and out.
+	 * 
+	 * @author M00031
+	 *
+	 */
 	private class FractalsMouseListener implements MouseListener {
 
 		private final double ZOOM_IN_FACTOR = 5;
@@ -134,6 +151,8 @@ public class FractalsUI {
 			}
 		}
 
+		/* These methods are not used for zooming in and out.
+		 */
 		public void mouseEntered(MouseEvent me) {}
 
 		public void mouseExited(MouseEvent me) {}
@@ -172,6 +191,24 @@ public class FractalsUI {
 				viewer.setConfig(fractalConfig);
 				image.setImage(viewer.getView(frameDimension));
 				frame.repaint();
+			}
+		}
+	}
+
+	/** This class is the ActionListener for the saveImage button.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class SaveImageActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent ae) {
+			JFileChooser fileChooser = new JFileChooser();
+			if(fileChooser.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
+				try {
+					ImageIO.write((BufferedImage)viewer.getView(frameDimension), "png", fileChooser.getSelectedFile());
+				} catch(IOException ioe) {
+					log.error("IOException thrown while saving a screenshot.");
+				}
 			}
 		}
 	}

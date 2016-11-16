@@ -93,9 +93,10 @@ public class MandelbrotConfig implements FractalConfig{
 		this.palette = palette;
 	}
 
-	/** 
-	 * Creates a MandelbrotConfig using an existing config with a new zoom, center and maxDwell. It
+	/**
+	 * Creates a new MandelbrotConfig using an existing config with a new zoom, center and maxDwell. It
 	 * uses the color palette from the existing config.
+	 * 
 	 * @param center
 	 * @param zoom
 	 * @param maxdwell

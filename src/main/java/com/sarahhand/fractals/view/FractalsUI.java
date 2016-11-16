@@ -94,6 +94,8 @@ public class FractalsUI {
 		private final int LEFT_CLICK = 1;
 		private final int RIGHT_CLICK = 3;
 		
+		private Point draggingPos;
+		
 		/** Creates a new MandelbrotConfig using the existing one.
 		 * The new configuration will have a new center and zoom.
 		 * 
@@ -142,8 +144,6 @@ public class FractalsUI {
 		public void mouseEntered(MouseEvent me) {}
 
 		public void mouseExited(MouseEvent me) {}
-		
-		private Point draggingPos;
 		
 		public void mouseReleased(MouseEvent me) {
 			image.setImage(viewer.getView(frameDimension));

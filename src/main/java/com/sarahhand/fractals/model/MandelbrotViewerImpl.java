@@ -74,6 +74,9 @@ class MandelbrotViewerImpl implements FractalViewer{
 			}
 		}
 		
+//		Another method i tried to optomize panning,
+//		kept in case I find a way to make it better.
+		
 //		Rectangle top = new Rectangle(predrawnPoints.x, predrawnPoints.y - RECT_BUFFER, predrawnPoints.width, RECT_BUFFER);
 //		Rectangle bottom = new Rectangle(predrawnPoints.x, predrawnPoints.y + predrawnPoints.height, predrawnPoints.width, RECT_BUFFER);//works
 //		Rectangle left = new Rectangle(predrawnPoints.x - RECT_BUFFER, predrawnPoints.y - RECT_BUFFER, RECT_BUFFER, RECT_BUFFER*3);

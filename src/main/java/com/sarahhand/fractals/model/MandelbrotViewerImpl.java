@@ -26,6 +26,8 @@ class MandelbrotViewerImpl implements FractalViewer{
 	private static final int MIN_SIZE = 10;
 	public static final int MAX_Z = 1000;
 	
+//	public static final int RECT_BUFFER = 2000;
+	
 	private MandelbrotConfig config;
 	
 	@Override
@@ -37,6 +39,69 @@ class MandelbrotViewerImpl implements FractalViewer{
 		Graphics2D g = image.createGraphics();
 		
 		renderRect(g, new Rectangle(dimensions), dimensions, MIN_SIZE);
+		
+		log.debug("Time to generate Mandelbrot image: {}ms.", System.currentTimeMillis()-time);
+		
+		return image;
+	}
+	
+	@Override
+	public Image getViewPanning(Dimension dimensions, FractalConfig oldConfig, Image oldImage){
+		
+		if (!(oldConfig instanceof MandelbrotConfig)){
+			throw new IllegalArgumentException("oldConfig must be instance of MandelbrotConfig.");
+		}
+		
+		long time = System.currentTimeMillis();
+		
+		BufferedImage image = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = image.createGraphics();
+		
+		int x = (int)((oldConfig.getCenter().x-config.getCenter().x)*config.getZoom());
+		int y = (int)((config.getCenter().y-oldConfig.getCenter().y)*config.getZoom());
+		
+		g.drawImage(oldImage, x, y, null);
+		
+		Rectangle predrawnPoints = new Rectangle(x, y, oldImage.getWidth(null), oldImage.getHeight(null));
+		
+		Rectangle frame = new Rectangle(dimensions);
+		
+		for(int m = 0; m < dimensions.width; m++){
+			for(int n = 0; n < dimensions.width; n++){
+				if(!predrawnPoints.contains(m, n)){
+					renderPoint(new Point(m, n), g, dimensions);
+				}
+			}
+		}
+		
+//		Another method I tried to optimize panning,
+//		kept in case I find a way to make it better.
+		
+//		Rectangle top = new Rectangle(predrawnPoints.x, predrawnPoints.y - RECT_BUFFER, predrawnPoints.width, RECT_BUFFER);
+//		Rectangle bottom = new Rectangle(predrawnPoints.x, predrawnPoints.y + predrawnPoints.height, predrawnPoints.width, RECT_BUFFER);//works
+//		Rectangle left = new Rectangle(predrawnPoints.x - RECT_BUFFER, predrawnPoints.y - RECT_BUFFER, RECT_BUFFER, RECT_BUFFER*3);
+//		Rectangle right = new Rectangle(predrawnPoints.x + predrawnPoints.width, predrawnPoints.y + RECT_BUFFER, RECT_BUFFER, RECT_BUFFER*3);
+//		
+//		Rectangle topIntersect = frame.intersection(top);
+//		Rectangle bottomIntersect = frame.intersection(bottom);
+//		Rectangle leftIntersect = frame.intersection(left);
+//		Rectangle rightIntersect = frame.intersection(right);
+//		
+//		if(!topIntersect.isEmpty()){
+//			renderRect(g, topIntersect, dimensions, 10);
+//		}
+//		
+//		if(!bottomIntersect.isEmpty()){
+//			renderRect(g, bottomIntersect, dimensions, 10);
+//		}
+//		
+//		if(!leftIntersect.isEmpty()){
+//			renderRect(g, leftIntersect, dimensions, 10);
+//		}
+//		
+//		if(!rightIntersect.isEmpty()){
+//			renderRect(g, rightIntersect, dimensions, 10);
+//		}
 		
 		log.debug("Time to generate Mandelbrot image: {}ms.", System.currentTimeMillis()-time);
 		

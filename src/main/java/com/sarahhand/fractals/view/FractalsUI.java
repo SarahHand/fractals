@@ -3,10 +3,13 @@ package com.sarahhand.fractals.view;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D.Double;
 
 import javax.swing.ImageIcon;
@@ -14,6 +17,9 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sarahand.fractals.json.ConfigSaverLoader;
 import com.sarahhand.fractals.colorpalette.ChangeColorPalette;
@@ -29,7 +35,9 @@ import com.sarahhand.fractals.model.MandelbrotConfig;
  *
  */
 public class FractalsUI {
-
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	JFrame frame;
 	Dimension frameDimension;
 	FractalViewerFactory viewerFactory;
@@ -72,15 +80,18 @@ public class FractalsUI {
 		frame.add(imageLabel);
 		frame.add(saveFractalConfig);
 		frame.add(loadFractalConfig);
+		
+		FractalsMouseListener mouseListener = new FractalsMouseListener();
+		frame.addMouseListener(mouseListener);
+		frame.addMouseMotionListener(mouseListener);
+		
 		frame.add(createColorPalette);
-
-		frame.addMouseListener(new FractalsMouseListener());
 
 		frame.pack();
 		frame.setVisible(true);
 	}
-
-	private class FractalsMouseListener implements MouseListener {
+	
+	private class FractalsMouseListener implements MouseListener, MouseMotionListener {
 
 		private final double ZOOM_IN_FACTOR = 5;
 		private final double ZOOM_OUT_FACTOR = 1 / ZOOM_IN_FACTOR;
@@ -88,7 +99,9 @@ public class FractalsUI {
 		private final int MAX_DWELL_DECREASE = -MAX_DWELL_INCREASE;
 		private final int LEFT_CLICK = 1;
 		private final int RIGHT_CLICK = 3;
-
+		
+		private Point draggingPos;
+		
 		/** Creates a new MandelbrotConfig using the existing one.
 		 * The new configuration will have a new center and zoom.
 		 * 
@@ -137,10 +150,48 @@ public class FractalsUI {
 		public void mouseEntered(MouseEvent me) {}
 
 		public void mouseExited(MouseEvent me) {}
+		
+		public void mouseReleased(MouseEvent me) {
+			image.setImage(viewer.getView(frameDimension));
+			log.debug("Mouse Released");
+			frame.repaint();
+		}
 
-		public void mouseReleased(MouseEvent me) {}
+		public void mousePressed(MouseEvent me) {
+			
+			log.debug("Start Position: " + me.getX() + " " + me.getY());
+			draggingPos = me.getPoint();
+		}
 
-		public void mousePressed(MouseEvent me) {}
+		@Override
+		public void mouseDragged(MouseEvent me){
+			
+			FractalConfig oldConfig = fractalConfig;
+			Image oldImage = image.getImage();
+			
+			int xChange = draggingPos.x - me.getX();
+			int yChange = me.getY() - draggingPos.y;
+			
+			double centerX = fractalConfig.getCenter().x + xChange / fractalConfig.getZoom();
+			double centerY = fractalConfig.getCenter().y + yChange / fractalConfig.getZoom();
+			Double newCenter = new Double(centerX, centerY);
+			fractalConfig =  new MandelbrotConfig(newCenter, fractalConfig.getZoom(), fractalConfig.getMaxDwell(), (MandelbrotConfig)fractalConfig);
+			
+			viewer.setConfig(fractalConfig);
+			image.setImage(viewer.getViewPanning(frameDimension, oldConfig, oldImage));
+			frame.repaint();
+			
+			log.debug("Zoom: " + fractalConfig.getZoom());
+			
+			log.debug("Change: " + xChange + " " + yChange);
+			
+			log.debug("Max Dwell: " + fractalConfig.getMaxDwell());
+			
+			draggingPos = me.getPoint();
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent me){}
 	}
 
 	/** This class is the ActionListener for the saveFractalConfig button.

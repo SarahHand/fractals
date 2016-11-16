@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sarahand.fractals.json.ConfigSaverLoader;
+import com.sarahhand.fractals.colorpalette.ChangeColorPalette;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.FractalType;
 import com.sarahhand.fractals.model.FractalViewer;
@@ -47,6 +48,7 @@ public class FractalsUI {
 
 	private JButton saveFractalConfig;
 	private JButton loadFractalConfig;
+	private JButton createColorPalette;
 
 	final int FRAME_WIDTH = 800;
 	final int FRAME_HEIGHT = 700;
@@ -69,9 +71,11 @@ public class FractalsUI {
 
 		saveFractalConfig = new JButton("Save");
 		loadFractalConfig = new JButton("Load");
-		
+		createColorPalette = new JButton("Create New Color Palette");
+
 		saveFractalConfig.addActionListener(new SaveConfigActionListener());
 		loadFractalConfig.addActionListener(new LoadConfigActionListener());
+		createColorPalette.addActionListener(new CreateColorPaletteListener());
 
 		frame.add(imageLabel);
 		frame.add(saveFractalConfig);
@@ -80,6 +84,8 @@ public class FractalsUI {
 		FractalsMouseListener mouseListener = new FractalsMouseListener();
 		frame.addMouseListener(mouseListener);
 		frame.addMouseMotionListener(mouseListener);
+		
+		frame.add(createColorPalette);
 
 		frame.pack();
 		frame.setVisible(true);
@@ -117,7 +123,7 @@ public class FractalsUI {
 			int newMaxDwell = fractalConfig.getMaxDwell() + maxDwellOffset;
 			return new MandelbrotConfig(newCenter, newZoom, newMaxDwell, (MandelbrotConfig)fractalConfig);
 		}
-		
+
 		/** Zooms in and out depending on whether the left button or the right button respectively are clicked.
 		 */
 		public void mouseClicked(MouseEvent me) {
@@ -187,9 +193,13 @@ public class FractalsUI {
 		@Override
 		public void mouseMoved(MouseEvent me){}
 	}
-	
+
+	/** This class is the ActionListener for the saveFractalConfig button.
+	 * 
+	 * @author M00031
+	 *
+	 */
 	private class SaveConfigActionListener implements ActionListener {
-		
 		public void actionPerformed(ActionEvent ae) {
 			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
 			JFileChooser fileChooser = new JFileChooser();
@@ -198,9 +208,13 @@ public class FractalsUI {
 			}
 		}
 	}
-	
+
+	/** This class is the ActionListener for the loadFractalConfig button.
+	 * 
+	 * @author M00031
+	 *
+	 */
 	private class LoadConfigActionListener implements ActionListener {
-		
 		public void actionPerformed(ActionEvent ae) {
 			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
 			JFileChooser fileChooser = new JFileChooser();
@@ -212,9 +226,44 @@ public class FractalsUI {
 			}
 		}
 	}
-	
-	@SuppressWarnings("unused")
+
+	/** This class is the ActionListener for the createColorPalette button.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class CreateColorPaletteListener implements ActionListener {
+		public void actionPerformed(ActionEvent ae) {
+			ChangeColorPalette changeCP = new ChangeColorPalette();
+			Thread changePaletteThread = new Thread(new ChangePaletteRunnable(changeCP));
+			changePaletteThread.start();			
+		}
+	}
+
+	/** This lets the ChangeColorPalette frame run on a different Thread.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class ChangePaletteRunnable implements Runnable {
+
+		private ChangeColorPalette changeCP;
+
+		public ChangePaletteRunnable(ChangeColorPalette changeCP) {
+			this.changeCP = changeCP;
+		}
+
+		public void run() {
+			while (changeCP.getCreatedColorPalette() == null) {}
+			fractalConfig = new MandelbrotConfig(fractalConfig.getCenter(),
+					fractalConfig.getZoom(), fractalConfig.getMaxDwell(), changeCP.getCreatedColorPalette());
+			viewer.setConfig(fractalConfig);
+			image.setImage(viewer.getView(frameDimension));
+			frame.repaint();
+		}
+	}
+
 	public static void main(String args[]) {
-		FractalsUI ui = new FractalsUI();
+		new FractalsUI();
 	}
 }

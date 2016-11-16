@@ -14,8 +14,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.json.JsonReaderWriter;
 
-/**
- * Class for loading FractalConfigs.
+/** This class is used to save and load FractalConfigs to a JSON file.
+ * 
+ * @author M00031
+ *
  */
 public class ConfigSaverLoader{
 
@@ -49,6 +51,7 @@ public class ConfigSaverLoader{
 
 	/**
 	 * Loads the fractal config from the specified stream and returns it.
+	 * 
 	 * @param target
 	 * @param stream
 	 * @return

@@ -39,7 +39,7 @@ public class ChangeColorPalette {
 
 	private final int FRAME_WIDTH = 500;
 	private final int FRAME_HEIGHT = 500;
-	private final int COLOR_PALETTE_LENGTH = 200;
+	private final int COLOR_PALETTE_LENGTH = ColorPalette.COLOR_PALETTE_LENGTH;
 
 	public ColorPalette getCreatedColorPalette() {
 		return newColorPalette;

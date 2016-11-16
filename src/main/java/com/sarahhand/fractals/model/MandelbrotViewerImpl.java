@@ -26,7 +26,7 @@ class MandelbrotViewerImpl implements FractalViewer{
 	private static final int MIN_SIZE = 10;
 	public static final int MAX_Z = 1000;
 	
-	public static final int RECT_BUFFER = 2000;
+//	public static final int RECT_BUFFER = 2000;
 	
 	private MandelbrotConfig config;
 	
@@ -74,7 +74,7 @@ class MandelbrotViewerImpl implements FractalViewer{
 			}
 		}
 		
-//		Another method i tried to optomize panning,
+//		Another method I tried to optimize panning,
 //		kept in case I find a way to make it better.
 		
 //		Rectangle top = new Rectangle(predrawnPoints.x, predrawnPoints.y - RECT_BUFFER, predrawnPoints.width, RECT_BUFFER);

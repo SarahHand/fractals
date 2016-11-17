@@ -13,7 +13,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -102,7 +101,7 @@ public class FractalsUI {
 		frame.setVisible(true);
 	}
 
-	/** This class is the MouseListener for the frame. It is used for zooming in and out.
+	/** This class is the MouseListener for the frame. It is used for zooming in and out. It also handles panning.
 	 * 
 	 * @author M00031
 	 *
@@ -218,9 +217,11 @@ public class FractalsUI {
 	 *
 	 */
 	private class SaveConfigActionListener implements ActionListener {
+
+		private ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
+		private JFileChooser fileChooser = new JFileChooser();
+
 		public void actionPerformed(ActionEvent ae) {
-			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
-			JFileChooser fileChooser = new JFileChooser();
 			if(fileChooser.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
 				saverLoader.save(fractalConfig, fileChooser.getSelectedFile().getAbsolutePath());
 			}
@@ -233,9 +234,11 @@ public class FractalsUI {
 	 *
 	 */
 	private class LoadConfigActionListener implements ActionListener {
+
+		private ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
+		private JFileChooser fileChooser = new JFileChooser();
+
 		public void actionPerformed(ActionEvent ae) {
-			ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
-			JFileChooser fileChooser = new JFileChooser();
 			if(fileChooser.showDialog(null, "Load") == JFileChooser.APPROVE_OPTION) {
 				fractalConfig = (MandelbrotConfig)saverLoader.load(fractalConfig.getClass(), fileChooser.getSelectedFile().getAbsolutePath());
 				viewer.setConfig(fractalConfig);
@@ -252,10 +255,10 @@ public class FractalsUI {
 	 */
 	private class SaveImageActionListener implements ActionListener {
 
-		List<String> extensions = Arrays.asList("png", "jpg", "jpeg", "bmp", "gif");
+		private List<String> extensions = Arrays.asList("png", "jpg", "jpeg", "bmp", "gif");
+		private JFileChooser fileChooser = new JFileChooser();
 
 		public void actionPerformed(ActionEvent ae) {
-			JFileChooser fileChooser = new JFileChooser();
 			if(fileChooser.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
 				String fileName = fileChooser.getName(fileChooser.getSelectedFile());
 				String[] fileNameParts = fileName.split("\\.");
@@ -282,6 +285,7 @@ public class FractalsUI {
 	 *
 	 */
 	private class CreateColorPaletteListener implements ActionListener {
+
 		public void actionPerformed(ActionEvent ae) {
 			ChangeColorPalette changeCP = new ChangeColorPalette();
 			Thread changePaletteThread = new Thread(new ChangePaletteRunnable(changeCP));

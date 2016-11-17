@@ -1,5 +1,6 @@
 package com.sarahhand.fractals.view;
 
+import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -23,6 +24,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,7 @@ public class FractalsUI {
 	ImageIcon image;
 	private JLabel imageLabel;
 
+	private JPanel buttonPanel;
 	private JButton saveFractalConfig;
 	private JButton loadFractalConfig;
 	private JButton saveImage;
@@ -64,7 +67,7 @@ public class FractalsUI {
 	 */
 	public FractalsUI() {
 		frame = new JFrame("Fractal Viewer");
-		frame.setLayout(new FlowLayout());
+		frame.setLayout(new BorderLayout());
 		frameDimension = new Dimension(FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setSize(frameDimension);
 		frame.setResizable(false);
@@ -76,26 +79,27 @@ public class FractalsUI {
 		image = new ImageIcon(viewer.getView(frameDimension));
 		imageLabel = new JLabel(image);
 
+		buttonPanel = new JPanel();
 		saveFractalConfig = new JButton("Save");
 		loadFractalConfig = new JButton("Load");
 		saveImage = new JButton("Save Screenshot");
 		createColorPalette = new JButton("Create New Color Palette");
+		buttonPanel.add(saveFractalConfig);
+		buttonPanel.add(loadFractalConfig);
+		buttonPanel.add(saveImage);
+		buttonPanel.add(createColorPalette);
 
 		saveFractalConfig.addActionListener(new SaveConfigActionListener());
 		loadFractalConfig.addActionListener(new LoadConfigActionListener());
 		saveImage.addActionListener(new SaveImageActionListener());
 		createColorPalette.addActionListener(new CreateColorPaletteListener());
 
-		frame.add(imageLabel);
-		frame.add(saveFractalConfig);
-		frame.add(loadFractalConfig);
-
 		FractalsMouseListener mouseListener = new FractalsMouseListener();
 		frame.addMouseListener(mouseListener);
 		frame.addMouseMotionListener(mouseListener);
 
-		frame.add(createColorPalette);
-		frame.add(saveImage);
+		frame.add(buttonPanel, BorderLayout.NORTH);
+		frame.add(imageLabel, BorderLayout.SOUTH);
 
 		frame.pack();
 		frame.setVisible(true);
@@ -147,12 +151,14 @@ public class FractalsUI {
 				int buttonType = me.getButton();
 				int mouseX = me.getX();
 				int mouseY = me.getY();
-				if(buttonType == LEFT_CLICK) {
-					fractalConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_IN_FACTOR,
-							MAX_DWELL_INCREASE);
-				} else if(buttonType == RIGHT_CLICK) {
-					fractalConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_OUT_FACTOR,
-							MAX_DWELL_DECREASE);
+				if(mouseX < frameDimension.width && mouseY < frameDimension.height) {
+					if(buttonType == LEFT_CLICK) {
+						fractalConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_IN_FACTOR,
+								MAX_DWELL_INCREASE);
+					} else if(buttonType == RIGHT_CLICK) {
+						fractalConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_OUT_FACTOR,
+								MAX_DWELL_DECREASE);
+					}
 				}
 				viewer.setConfig(fractalConfig);
 				image.setImage(viewer.getView(frameDimension));

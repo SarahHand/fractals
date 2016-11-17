@@ -61,7 +61,7 @@ public class FractalsUI {
 	private JButton createColorPalette;
 
 	final int FRAME_WIDTH = 800;
-	final int FRAME_HEIGHT = 700;
+	final int FRAME_HEIGHT = 600;
 
 	/** This method sets up the UI for the Mandelbrot Set Viewer.
 	 */
@@ -151,7 +151,7 @@ public class FractalsUI {
 				int buttonType = me.getButton();
 				int mouseX = me.getX();
 				int mouseY = me.getY();
-				if(mouseX < frameDimension.width && mouseY < frameDimension.height) {
+				if(mouseX < frameDimension.width &&	mouseY < frameDimension.height && imageLabel.getBounds().contains(mouseX, mouseY)) {
 					if(buttonType == LEFT_CLICK) {
 						fractalConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_IN_FACTOR,
 								MAX_DWELL_INCREASE);

@@ -13,6 +13,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -20,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +44,7 @@ import com.sarahhand.fractals.model.MandelbrotConfig;
 public class FractalsUI {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
+
 	JFrame frame;
 	Dimension frameDimension;
 	FractalViewerFactory viewerFactory;
@@ -86,11 +90,11 @@ public class FractalsUI {
 		frame.add(imageLabel);
 		frame.add(saveFractalConfig);
 		frame.add(loadFractalConfig);
-		
+
 		FractalsMouseListener mouseListener = new FractalsMouseListener();
 		frame.addMouseListener(mouseListener);
 		frame.addMouseMotionListener(mouseListener);
-		
+
 		frame.add(createColorPalette);
 		frame.add(saveImage);
 
@@ -111,9 +115,9 @@ public class FractalsUI {
 		private final int MAX_DWELL_DECREASE = -MAX_DWELL_INCREASE;
 		private final int LEFT_CLICK = 1;
 		private final int RIGHT_CLICK = 3;
-		
+
 		private Point draggingPos;
-		
+
 		/** Creates a new MandelbrotConfig using the existing one.
 		 * The new configuration will have a new center and zoom.
 		 * 
@@ -164,7 +168,7 @@ public class FractalsUI {
 		public void mouseEntered(MouseEvent me) {}
 
 		public void mouseExited(MouseEvent me) {}
-		
+
 		public void mouseReleased(MouseEvent me) {
 			image.setImage(viewer.getView(frameDimension));
 			log.debug("Mouse Released");
@@ -172,38 +176,38 @@ public class FractalsUI {
 		}
 
 		public void mousePressed(MouseEvent me) {
-			
+
 			log.debug("Start Position: " + me.getX() + " " + me.getY());
 			draggingPos = me.getPoint();
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent me){
-			
+
 			FractalConfig oldConfig = fractalConfig;
 			Image oldImage = image.getImage();
-			
+
 			int xChange = draggingPos.x - me.getX();
 			int yChange = me.getY() - draggingPos.y;
-			
+
 			double centerX = fractalConfig.getCenter().x + xChange / fractalConfig.getZoom();
 			double centerY = fractalConfig.getCenter().y + yChange / fractalConfig.getZoom();
 			Double newCenter = new Double(centerX, centerY);
 			fractalConfig =  new MandelbrotConfig(newCenter, fractalConfig.getZoom(), fractalConfig.getMaxDwell(), (MandelbrotConfig)fractalConfig);
-			
+
 			viewer.setConfig(fractalConfig);
 			image.setImage(viewer.getViewPanning(frameDimension, oldConfig, oldImage));
 			frame.repaint();
-			
+
 			log.debug("Zoom: " + fractalConfig.getZoom());
-			
+
 			log.debug("Change: " + xChange + " " + yChange);
-			
+
 			log.debug("Max Dwell: " + fractalConfig.getMaxDwell());
-			
+
 			draggingPos = me.getPoint();
 		}
-		
+
 		@Override
 		public void mouseMoved(MouseEvent me){}
 	}
@@ -247,13 +251,26 @@ public class FractalsUI {
 	 *
 	 */
 	private class SaveImageActionListener implements ActionListener {
+
+		List<String> extensions = Arrays.asList("png", "jpg", "jpeg", "bmp", "gif");
+
 		public void actionPerformed(ActionEvent ae) {
 			JFileChooser fileChooser = new JFileChooser();
 			if(fileChooser.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
-				try {
-					ImageIO.write((BufferedImage)viewer.getView(frameDimension), "png", fileChooser.getSelectedFile());
-				} catch(IOException ioe) {
-					log.error("IOException thrown while saving a screenshot.");
+				String fileName = fileChooser.getName(fileChooser.getSelectedFile());
+				String[] fileNameParts = fileName.split("\\.");
+				if(fileNameParts != null &&
+						fileNameParts.length >= 2 &&
+						extensions.contains(fileNameParts[fileNameParts.length - 1])) {
+					try {
+						ImageIO.write((BufferedImage)viewer.getView(frameDimension),
+								fileNameParts[fileNameParts.length - 1],
+								fileChooser.getSelectedFile());
+					} catch(IOException ioe) {
+						log.error("IOException thrown while saving a screenshot.");
+					}
+				} else {
+					JOptionPane.showMessageDialog(frame, "Your file name must have one of the extensions: png, jpg, jpeg, gif, or bmp.");
 				}
 			}
 		}
@@ -268,7 +285,7 @@ public class FractalsUI {
 		public void actionPerformed(ActionEvent ae) {
 			ChangeColorPalette changeCP = new ChangeColorPalette();
 			Thread changePaletteThread = new Thread(new ChangePaletteRunnable(changeCP));
-			changePaletteThread.start();			
+			changePaletteThread.start();
 		}
 	}
 

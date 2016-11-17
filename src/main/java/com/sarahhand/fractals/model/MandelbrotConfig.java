@@ -55,7 +55,8 @@ public class MandelbrotConfig implements FractalConfig{
 	public ColorPalette getPalette() {
 		return palette;
 	}
-
+	
+	@JsonIgnore
 	public ColorScheme getColorScheme(){
 		return colorScheme;
 	}

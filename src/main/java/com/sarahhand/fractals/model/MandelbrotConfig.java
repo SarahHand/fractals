@@ -5,6 +5,8 @@ import java.awt.geom.Point2D.Double;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sarahhand.fractals.model.colorscheme.ColorScheme;
+import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
 
 /**
  * Class that stores information about a particular image of the Mandelbrot Set.
@@ -17,6 +19,7 @@ public class MandelbrotConfig implements FractalConfig{
 	private static double CENTER_Y_DEFAULT = 0;
 	private static int ZOOM_DEFAULT = 200;
 	private static int MAX_DWELL_DEFAULT = 500;
+	private static ColorScheme COLOR_SCHEME_DEFAULT = new EscapeTimeColorScheme();
 	
 	public static final MandelbrotConfig DEAFAULT_CONFIG = new MandelbrotConfig();
 
@@ -25,6 +28,7 @@ public class MandelbrotConfig implements FractalConfig{
 	private double zoom = ZOOM_DEFAULT;
 	private int maxDwell = MAX_DWELL_DEFAULT;
 	private ColorPalette palette = ColorPalette.DEFAULT_PALETTE;
+	private ColorScheme colorScheme = COLOR_SCHEME_DEFAULT;
 	
 	public double getX(){
 		return x;
@@ -51,6 +55,14 @@ public class MandelbrotConfig implements FractalConfig{
 	public ColorPalette getPalette() {
 		return palette;
 	}
+
+	public ColorScheme getColorScheme(){
+		return colorScheme;
+	}
+
+	public void setColorScheme(ColorScheme colorScheme){
+		this.colorScheme = colorScheme;
+	}
 	
 	/**
 	 * Default constructor creates config with default values.
@@ -64,12 +76,13 @@ public class MandelbrotConfig implements FractalConfig{
 	 * @param maxDwell
 	 * @param palette
 	 */
-	public MandelbrotConfig(Double center, double zoom, int maxDwell, ColorPalette palette) {
+	public MandelbrotConfig(Double center, double zoom, int maxDwell, ColorPalette palette, ColorScheme colorScheme) {
 		this.x = center.x;
 		this.y = center.y;
 		this.zoom = zoom;
 		this.maxDwell = maxDwell;
 		this.palette = palette;
+		this.colorScheme = colorScheme;
 	}
 	
 	/**
@@ -85,7 +98,8 @@ public class MandelbrotConfig implements FractalConfig{
 	public MandelbrotConfig(@JsonProperty("x") double x, @JsonProperty("y") double y, 
 			@JsonProperty("zoom") double zoom, 
 			@JsonProperty("maxDwell") int maxDwell, 
-			@JsonProperty("palette") ColorPalette palette) {
+			@JsonProperty("palette") ColorPalette palette,
+			@JsonProperty("colorScheme") ColorScheme colorScheme) {
 		this.x = x;
 		this.y = y;
 		this.zoom = zoom;
@@ -108,5 +122,6 @@ public class MandelbrotConfig implements FractalConfig{
 		this.zoom = zoom;
 		this.maxDwell = maxDwell;
 		this.palette = old.palette;
+		this.colorScheme = old.colorScheme;
 	}
 }

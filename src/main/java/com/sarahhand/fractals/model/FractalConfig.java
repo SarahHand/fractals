@@ -2,6 +2,8 @@ package com.sarahhand.fractals.model;
 
 import java.awt.geom.Point2D.Double;
 
+import com.sarahhand.fractals.model.colorscheme.ColorScheme;
+
 /**
  * Marker interface for a fractal's configuration information.
  */
@@ -31,4 +33,6 @@ public interface FractalConfig{
 	 * @return
 	 */
 	public ColorPalette getPalette();
+	
+	public ColorScheme getColorScheme();
 }

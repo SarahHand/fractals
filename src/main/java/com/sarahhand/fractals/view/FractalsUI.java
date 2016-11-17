@@ -21,13 +21,13 @@ import javax.swing.JLabel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sarahand.fractals.json.ConfigSaverLoader;
 import com.sarahhand.fractals.colorpalette.ChangeColorPalette;
+import com.sarahhand.fractals.json.ConfigSaverLoader;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.FractalType;
-import com.sarahhand.fractals.model.FractalViewer;
-import com.sarahhand.fractals.model.FractalViewerFactory;
 import com.sarahhand.fractals.model.MandelbrotConfig;
+import com.sarahhand.fractals.viewer.FractalViewer;
+import com.sarahhand.fractals.viewer.FractalViewerFactory;
 
 /** This class will display the Mandelbrot set and allow you to do a variety of other things.
  * 
@@ -256,7 +256,8 @@ public class FractalsUI {
 		public void run() {
 			while (changeCP.getCreatedColorPalette() == null) {}
 			fractalConfig = new MandelbrotConfig(fractalConfig.getCenter(),
-					fractalConfig.getZoom(), fractalConfig.getMaxDwell(), changeCP.getCreatedColorPalette());
+					fractalConfig.getZoom(), fractalConfig.getMaxDwell(),
+					changeCP.getCreatedColorPalette(), fractalConfig.getColorScheme());
 			viewer.setConfig(fractalConfig);
 			image.setImage(viewer.getView(frameDimension));
 			frame.repaint();

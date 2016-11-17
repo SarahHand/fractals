@@ -1,7 +1,11 @@
-package com.sarahhand.fractals.model;
+package com.sarahhand.fractals.viewer;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.util.List;
+
+import com.sarahhand.fractals.model.FractalConfig;
+import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 
 /**
  * Interface that draws a fractal.
@@ -42,4 +46,9 @@ public interface FractalViewer{
 	 * @return
 	 */
 	public FractalConfig getConfig();
+	
+	/**
+	 * Returns a list of color schemes supported by this viewer.
+	 */
+	public List<ColorScheme> getSupportedColorSchemes();
 }

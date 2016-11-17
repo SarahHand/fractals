@@ -151,7 +151,7 @@ public class FractalsUI {
 				int buttonType = me.getButton();
 				int mouseX = me.getX();
 				int mouseY = me.getY();
-				if(mouseX < frameDimension.width &&	mouseY < frameDimension.height && imageLabel.getBounds().contains(mouseX, mouseY)) {
+				if(imageLabel.getBounds().contains(mouseX, mouseY)) {
 					if(buttonType == LEFT_CLICK) {
 						fractalConfig = createNewConfig(frameDimension, mouseX, mouseY, ZOOM_IN_FACTOR,
 								MAX_DWELL_INCREASE);

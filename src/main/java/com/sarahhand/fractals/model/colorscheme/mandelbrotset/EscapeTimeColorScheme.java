@@ -9,6 +9,10 @@ import com.sarahhand.fractals.model.MandelbrotPointData;
 import com.sarahhand.fractals.model.PointData;
 import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 
+/**
+ * The default color scheme.
+ * @author J9465812
+ */
 public class EscapeTimeColorScheme implements ColorScheme{
 	
 	private static final double LOG2 = Math.log(2);
@@ -38,7 +42,7 @@ public class EscapeTimeColorScheme implements ColorScheme{
 			return Color.black;
 		}
 		
-		double log_zn = Math.log(castData.getZ().x*castData.getZ().x+castData.getZ().y*castData.getZ().y)/2;
+		double log_zn = Math.log(castData.getEndZValue().x*castData.getEndZValue().x+castData.getEndZValue().y*castData.getEndZValue().y)/2;
 		double nu = Math.log(log_zn/LOG2)/LOG2;
 		
 		double interpolateValue = (double)castData.getEscapeTime() + 1.0 - nu;
@@ -56,6 +60,14 @@ public class EscapeTimeColorScheme implements ColorScheme{
 		return interpolate(col1, col2, interpolateValue - Math.floor(interpolateValue));
 	}
 	
+	
+	/**
+	 * Mixes c1 and c2 based on the value of amount.
+	 * @param c1
+	 * @param c2
+	 * @param amount
+	 * @return
+	 */
 	private Color interpolate(Color c1, Color c2, double amount){
 		
 		int r1, r2, g1, g2, b1, b2;

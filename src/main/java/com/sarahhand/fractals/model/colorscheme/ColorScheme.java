@@ -5,6 +5,11 @@ import java.awt.Color;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.PointData;
 
+
+/**
+ * Interface that represents ways of coloring fractals.
+ * @author J9465812
+ */
 public interface ColorScheme{
 	
 	public String getName();

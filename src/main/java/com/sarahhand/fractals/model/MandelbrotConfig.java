@@ -60,10 +60,6 @@ public class MandelbrotConfig implements FractalConfig{
 	public ColorScheme getColorScheme(){
 		return colorScheme;
 	}
-
-	public void setColorScheme(ColorScheme colorScheme){
-		this.colorScheme = colorScheme;
-	}
 	
 	/**
 	 * Default constructor creates config with default values.
@@ -99,8 +95,7 @@ public class MandelbrotConfig implements FractalConfig{
 	public MandelbrotConfig(@JsonProperty("x") double x, @JsonProperty("y") double y, 
 			@JsonProperty("zoom") double zoom, 
 			@JsonProperty("maxDwell") int maxDwell, 
-			@JsonProperty("palette") ColorPalette palette,
-			@JsonProperty("colorScheme") ColorScheme colorScheme) {
+			@JsonProperty("palette") ColorPalette palette) {
 		this.x = x;
 		this.y = y;
 		this.zoom = zoom;

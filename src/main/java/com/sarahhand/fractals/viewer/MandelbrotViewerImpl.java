@@ -1,4 +1,4 @@
-package com.sarahhand.fractals.model;
+package com.sarahhand.fractals.viewer;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,9 +8,18 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sarahhand.fractals.model.ColorPalette;
+import com.sarahhand.fractals.model.FractalConfig;
+import com.sarahhand.fractals.model.MandelbrotConfig;
+import com.sarahhand.fractals.model.MandelbrotPointData;
+import com.sarahhand.fractals.model.colorscheme.ColorScheme;
+import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
 
 /**
  * Implements <code>MandelbrotViewer</code>.
@@ -218,44 +227,11 @@ class MandelbrotViewerImpl implements FractalViewer{
 			
 			if(z.x*z.x+z.y*z.y > MAX_Z){
 				
-				double log_zn = Math.log(z.x*z.x+z.y*z.y)/2;
-				double nu = Math.log(log_zn/LOG2)/LOG2;
-				
-				double interpolateValue = (double)n + 1.0 - nu;
-				
-				interpolateValue = Math.log(Math.abs(interpolateValue))/Math.log(1.01);
-				
-				Color col1 = config.getPalette().getColor(((int)(Math.floor(interpolateValue)) %
-						ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %
-						ColorPalette.COLOR_PALETTE_LENGTH);
-				
-				Color col2 = config.getPalette().getColor(((int)(Math.floor(interpolateValue+1)) %
-						ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %
-						ColorPalette.COLOR_PALETTE_LENGTH);
-				
-				return interpolate(col1, col2, interpolateValue - Math.floor(interpolateValue));
+				return config.getColorScheme().getColor(new MandelbrotPointData(p, n, new Double(z.x, z.y)), config);
 			}
 		}
 		
-		return Color.BLACK;
-	}
-	
-	private Color interpolate(Color c1, Color c2, double amount){
-		
-		int r1, r2, g1, g2, b1, b2;
-		
-		r1 = c1.getRed();
-		r2 = c2.getRed();
-		g1 = c1.getGreen();
-		g2 = c2.getGreen();
-		b1 = c1.getBlue();
-		b2 = c2.getBlue();
-		
-		double r = r1*(1 - amount) + r2*amount;
-		double g = g1*(1 - amount) + g2*amount;
-		double b = b1*(1 - amount) + b2*amount;
-		
-		return new Color((int)r, (int)g, (int)b);
+		return config.getColorScheme().getColor(new MandelbrotPointData(p, -1, new Double(z.x, z.y)), config);
 	}
 	
 	private static class ComplexNumber{
@@ -279,5 +255,10 @@ class MandelbrotViewerImpl implements FractalViewer{
 			ComplexNumber multiplication = new ComplexNumber(this.x*c.x - this.y*c.y, this.x*c.y + this.y*c.x);
 			return multiplication;
 		}
+	}
+
+	@Override
+	public List<ColorScheme> getSupportedColorSchemes(){
+		return Arrays.asList(new EscapeTimeColorScheme());
 	}
 }

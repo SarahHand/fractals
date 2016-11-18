@@ -1,4 +1,7 @@
-package com.sarahhand.fractals.model;
+package com.sarahhand.fractals.viewer;
+
+import com.sarahhand.fractals.model.FractalType;
+import com.sarahhand.fractals.model.MandelbrotConfig;
 
 /**
  * Factory for <code>FractalViewer</code>.

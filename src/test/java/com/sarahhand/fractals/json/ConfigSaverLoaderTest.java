@@ -10,7 +10,7 @@ import java.util.Scanner;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import com.sarahand.fractals.json.ConfigSaverLoader;
+import com.sarahhand.fractals.json.ConfigSaverLoader;
 import com.sarahhand.fractals.model.MandelbrotConfig;
 
 public class ConfigSaverLoaderTest{

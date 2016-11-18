@@ -1,4 +1,4 @@
-package com.sarahand.fractals.json;
+package com.sarahhand.fractals.json;
 
 import java.io.File;
 import java.io.FileInputStream;

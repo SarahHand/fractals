@@ -22,7 +22,11 @@ import com.sarahhand.fractals.model.colorscheme.mandelbrotset.BlackColorScheme;
 import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
 
 /**
- * Implements <code>MandelbrotViewer</code>.
+ * Implements <code>FractalViewer</code> and draws the Mandelbrot Set.<p>
+ * 
+ * For more information about the mathematics of the<br>
+ * Mandelbrot Set, see the
+ * <a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Wikipedia page</a>.
  * 
  * @author J9465812
  * @see FractalViewer

@@ -9,7 +9,7 @@
 		</layout>
 	</appender>
 
-	<logger name="com.sarahhand" level="info" additivity="false">
+	<logger name="com.sarahhand" level="debug" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
 	<logger name="com.sarahhand.fractals.model.MandelbrotViewerImpl" level="info" additivity="false">

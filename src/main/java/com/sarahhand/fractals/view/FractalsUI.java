@@ -128,6 +128,15 @@ public class FractalsUI {
 		for (ColorScheme scheme : viewer.getSupportedColorSchemes()) {
 			model.addElement(scheme);
 		}
+		setSelectedColorSchemes(selectedColorScheme);
+	}
+	
+	/** This method updates the selected ColorScheme to the one in the FractalConfig.
+	 * 
+	 * @param selectedColorScheme
+	 */
+	private void setSelectedColorSchemes(ColorScheme selectedColorScheme) {
+		DefaultComboBoxModel<ColorScheme> model = (DefaultComboBoxModel<ColorScheme>)this.colorSchemeComboBox.getModel();
 		model.setSelectedItem(selectedColorScheme);
 	}
 
@@ -297,6 +306,7 @@ public class FractalsUI {
 				fractalConfig = (MandelbrotConfig)saverLoader.load(fractalConfig.getClass(), fileChooser.getSelectedFile().getAbsolutePath());
 				viewer.setConfig(fractalConfig);
 				image.setImage(viewer.getView(frameDimension));
+				setSelectedColorSchemes(fractalConfig.getColorScheme());
 				frame.repaint();
 			}
 		}

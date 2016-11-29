@@ -2,6 +2,7 @@ package com.sarahhand.fractals.model.colorscheme.mandelbrotset;
 
 import java.awt.Color;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sarahhand.fractals.model.ColorPalette;
 import com.sarahhand.fractals.model.ComplexNumber;
 import com.sarahhand.fractals.model.FractalConfig;
@@ -14,6 +15,7 @@ import com.sarahhand.fractals.model.colorscheme.ColorScheme;
  * The default color scheme.
  * @author J9465812
  */
+@JsonTypeName("EscapeTime")
 public class EscapeTimeColorScheme implements ColorScheme{
 	
 	private static final double LOG2 = Math.log(2);

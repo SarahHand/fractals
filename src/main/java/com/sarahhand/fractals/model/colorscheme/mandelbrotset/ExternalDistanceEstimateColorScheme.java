@@ -2,6 +2,7 @@ package com.sarahhand.fractals.model.colorscheme.mandelbrotset;
 
 import java.awt.Color;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sarahhand.fractals.model.ColorPalette;
 import com.sarahhand.fractals.model.ComplexNumber;
 import com.sarahhand.fractals.model.FractalConfig;
@@ -10,6 +11,7 @@ import com.sarahhand.fractals.model.MandelbrotPointData;
 import com.sarahhand.fractals.model.PointData;
 import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 
+@JsonTypeName("ExternalDistance")
 public class ExternalDistanceEstimateColorScheme implements ColorScheme{
 
 	@Override

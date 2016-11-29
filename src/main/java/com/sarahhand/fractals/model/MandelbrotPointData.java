@@ -1,6 +1,7 @@
 package com.sarahhand.fractals.model;
 
 import java.awt.geom.Point2D.Double;
+import java.util.List;
 
 /**
  * Represents the data needed for a color scheme to color a point in the Mandelbrot set
@@ -14,12 +15,12 @@ public class MandelbrotPointData implements PointData{
 	/**
 	 * @see MandelbrotViewerImpl
 	 */
-	private Double endZValue;
+	private List<ComplexNumber> allZValues;
 	
-	public MandelbrotPointData(Double location, int escapeTime, Double z){
+	public MandelbrotPointData(Double location, int escapeTime, List<ComplexNumber> allZValues){
 		this.location = location;
 		this.escapeTime = escapeTime;
-		this.endZValue = z;
+		this.allZValues = allZValues;
 	}
 	
 	public Double getLocation(){
@@ -28,7 +29,7 @@ public class MandelbrotPointData implements PointData{
 	public int getEscapeTime(){
 		return escapeTime;
 	}
-	public Double getEndZValue(){
-		return endZValue;
+	public List<ComplexNumber> getAllZValues(){
+		return allZValues;
 	}
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
+import com.sarahhand.fractals.model.colorscheme.mandelbrotset.ExternalDistanceEstimateColorScheme;
 
 /**
  * Class that stores information about a particular image of the Mandelbrot Set.

@@ -3,23 +3,18 @@ package com.sarahhand.fractals.model.colorscheme.mandelbrotset;
 import java.awt.Color;
 
 import com.sarahhand.fractals.model.ColorPalette;
+import com.sarahhand.fractals.model.ComplexNumber;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.MandelbrotConfig;
 import com.sarahhand.fractals.model.MandelbrotPointData;
 import com.sarahhand.fractals.model.PointData;
 import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 
-/**
- * The default color scheme.
- * @author J9465812
- */
-public class EscapeTimeColorScheme implements ColorScheme{
-	
-	private static final double LOG2 = Math.log(2);
+public class ExternalDistanceEstimateColorScheme implements ColorScheme{
 
 	@Override
 	public String getName(){
-		return "Escape Time";
+		return "Exterior Distance";
 	}
 
 	@Override
@@ -42,12 +37,24 @@ public class EscapeTimeColorScheme implements ColorScheme{
 			return Color.black;
 		}
 		
-		double log_zn = Math.log(castData.getZValues().get(castData.getZValues().size()-1).x*castData.getZValues().get(castData.getZValues().size()-1).x+castData.getZValues().get(castData.getZValues().size()-1).y*castData.getZValues().get(castData.getZValues().size()-1).y)/2;
-		double nu = Math.log(log_zn/LOG2)/LOG2;
+		ComplexNumber pnc = castData.getZValues().get(castData.getEscapeTime());
+		double absPnc = Math.sqrt(pnc.x*pnc.x+pnc.y*pnc.y);
 		
-		double interpolateValue = (double)castData.getEscapeTime() + 1.0 - nu;
+		ComplexNumber one = new ComplexNumber(1, 0);
+		ComplexNumber two = new ComplexNumber(2, 0);
 		
-		interpolateValue = Math.log(Math.abs(interpolateValue))/Math.log(1.01);
+		ComplexNumber partialC = one;
+		
+		for(int n = 0; n < castData.getEscapeTime(); n++){
+			
+			partialC = two.multiply(castData.getZValues().get(n).multiply(partialC)).add(one);
+		}
+		
+		double absPartialC = Math.sqrt(partialC.x*partialC.x+partialC.y*partialC.y);
+		
+		double b = 2 * absPnc*Math.log(absPnc)/absPartialC;
+		
+		double interpolateValue = Math.log(b)/Math.log(1.05);
 		
 		Color col1 = castConfig.getPalette().getColor(((int)(Math.floor(interpolateValue)) %
 				ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %
@@ -88,6 +95,20 @@ public class EscapeTimeColorScheme implements ColorScheme{
 
 	@Override
 	public boolean isReady(PointData data, FractalConfig config){
-		return true;
+		
+		if(!(data instanceof MandelbrotPointData)){
+			
+			throw new IllegalArgumentException("data must be instance of MandelbrotPointData");
+		}
+		
+		if(!(config instanceof MandelbrotConfig)){
+			
+			throw new IllegalArgumentException("config must be instance of MandelbrotConfig");
+		}
+
+		MandelbrotPointData castData = (MandelbrotPointData)data;
+		MandelbrotConfig castConfig = (MandelbrotConfig)config;
+		
+		return castData.getZValues().size() > castConfig.getMaxDwell();
 	}
 }

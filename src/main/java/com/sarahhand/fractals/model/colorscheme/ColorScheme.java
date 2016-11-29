@@ -15,4 +15,6 @@ public interface ColorScheme{
 	public String getName();
 	
 	public Color getColor(PointData data, FractalConfig config);
+	
+	public boolean isReady(PointData data, FractalConfig config);
 }

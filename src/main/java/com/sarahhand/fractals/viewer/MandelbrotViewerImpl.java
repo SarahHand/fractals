@@ -8,18 +8,20 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sarahhand.fractals.model.ColorPalette;
+import com.sarahhand.fractals.model.ComplexNumber;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.MandelbrotConfig;
 import com.sarahhand.fractals.model.MandelbrotPointData;
 import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
+import com.sarahhand.fractals.model.colorscheme.mandelbrotset.ExternalDistanceEstimateColorScheme;
 
 /**
  * Implements <code>FractalViewer</code> and draws the Mandelbrot Set.<p>
@@ -37,7 +39,7 @@ class MandelbrotViewerImpl implements FractalViewer{
 	
 	private static final double LOG2 = Math.log(2);
 	private static final int MIN_SIZE = 10;
-	public static final int MAX_Z = 1000;
+	public static final int MAX_Z = 1000000;
 	
 //	public static final int RECT_BUFFER = 2000;
 	
@@ -53,7 +55,7 @@ class MandelbrotViewerImpl implements FractalViewer{
 		
 		renderRect(g, new Rectangle(dimensions), dimensions, MIN_SIZE);
 		
-		log.debug("Time to generate Mandelbrot image: {}ms.", System.currentTimeMillis()-time);
+		log.info("Time to generate Mandelbrot image: {}ms.", System.currentTimeMillis()-time);
 		
 		return image;
 	}
@@ -116,7 +118,7 @@ class MandelbrotViewerImpl implements FractalViewer{
 //			renderRect(g, rightIntersect, dimensions, 10);
 //		}
 		
-		log.debug("Time to generate Mandelbrot image: {}ms.", System.currentTimeMillis()-time);
+		log.info("Time to generate Mandelbrot image: {}ms.", System.currentTimeMillis()-time);
 		
 		return image;
 	}
@@ -225,44 +227,27 @@ class MandelbrotViewerImpl implements FractalViewer{
 		ComplexNumber c = new ComplexNumber(p.x, p.y);
 		ComplexNumber z = new ComplexNumber(0, 0);
 		
-		for(int n = 0; n < config.getMaxDwell(); n++){
+		List<ComplexNumber> zValues = new ArrayList<>((int)(config.getMaxDwell()));
+		
+		for(int n = 0; n < config.getMaxDwell() || !config.getColorScheme().isReady(new MandelbrotPointData(p, -1, zValues), config); n++){
+			
+			zValues.add(z);
 			
 			z = z.multiply(z).add(c);
 			
 			if(z.x*z.x+z.y*z.y > MAX_Z){
 				
-				return config.getColorScheme().getColor(new MandelbrotPointData(p, n, new Double(z.x, z.y)), config);
+				return config.getColorScheme().getColor(new MandelbrotPointData(p, n, zValues), config);
 			}
 		}
 		
-		return config.getColorScheme().getColor(new MandelbrotPointData(p, -1, new Double(z.x, z.y)), config);
+		//System.out.println(zValues.size());
+		
+		return config.getColorScheme().getColor(new MandelbrotPointData(p, -1, zValues), config);
 	}
 	
-	private static class ComplexNumber{
-		
-		double x;
-		double y;
-		
-		public ComplexNumber(double x, double y){
-			this.x = x;
-			this.y = y;
-		}
-		
-		public ComplexNumber add(ComplexNumber c){
-			
-			ComplexNumber addition = new ComplexNumber(this.x + c.x, this.y + c.y);
-			return addition;
-		}
-		
-		public ComplexNumber multiply(ComplexNumber c){
-			
-			ComplexNumber multiplication = new ComplexNumber(this.x*c.x - this.y*c.y, this.x*c.y + this.y*c.x);
-			return multiplication;
-		}
-	}
-
 	@Override
 	public List<ColorScheme> getSupportedColorSchemes(){
-		return Arrays.asList(new EscapeTimeColorScheme());
+		return Arrays.asList(new EscapeTimeColorScheme(), new ExternalDistanceEstimateColorScheme());
 	}
 }

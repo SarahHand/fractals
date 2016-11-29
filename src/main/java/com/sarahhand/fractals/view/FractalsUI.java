@@ -118,6 +118,11 @@ public class FractalsUI {
 		frame.setVisible(true);
 	}
 
+	/** This method is used to add all of the ColorSchemes to colorSchemeComboBox.
+	 * It also sets the selected ColorScheme to the one in the FractalConfig.
+	 * 
+	 * @param selectedColorScheme
+	 */
 	private void loadColorSchemes(ColorScheme selectedColorScheme) {
 		DefaultComboBoxModel<ColorScheme> model = (DefaultComboBoxModel<ColorScheme>)this.colorSchemeComboBox.getModel();
 		for (ColorScheme scheme : viewer.getSupportedColorSchemes()) {
@@ -126,6 +131,12 @@ public class FractalsUI {
 		model.setSelectedItem(selectedColorScheme);
 	}
 
+	/** This class is used to add ColorSchemes to colorSchemeComboBox,
+	 * but it only shows the name of the ColorScheme.
+	 * 
+	 * @author M00031
+	 *
+	 */
 	private class ColorSchemeListCellRenderer extends DefaultListCellRenderer {
 
 		private static final long serialVersionUID = -8726267565122387060L;
@@ -336,6 +347,12 @@ public class FractalsUI {
 		}
 	}
 	
+	/** This class is the ActionListener for the colorSchemeComboBox JComboBox.
+	 * It is used to detect when a different item is selected in the drop-down.
+	 * 
+	 * @author M00031
+	 *
+	 */
 	private class ColorSchemeComboBoxListener implements ActionListener {
 		
 		public void actionPerformed(ActionEvent ae) {

@@ -67,12 +67,13 @@ public class MandelbrotConfig implements FractalConfig{
 	 */
 	private MandelbrotConfig() {}
 	
-	/**
-	 * Creates a MandelbrotConfig with the specified values.
+	/** Creates a MandelbrotConfig with the specified values.
+	 * 
 	 * @param center
 	 * @param zoom
 	 * @param maxDwell
 	 * @param palette
+	 * @param colorScheme
 	 */
 	public MandelbrotConfig(Double center, double zoom, int maxDwell, ColorPalette palette, ColorScheme colorScheme) {
 		this.x = center.x;
@@ -106,7 +107,7 @@ public class MandelbrotConfig implements FractalConfig{
 
 	/**
 	 * Creates a new MandelbrotConfig using an existing config with a new zoom, center and maxDwell. It
-	 * uses the color palette from the existing config.
+	 * uses the ColorPalette and the ColorScheme from the existing config.
 	 * 
 	 * @param center
 	 * @param zoom
@@ -120,5 +121,19 @@ public class MandelbrotConfig implements FractalConfig{
 		this.maxDwell = maxDwell;
 		this.palette = old.palette;
 		this.colorScheme = old.colorScheme;
+	}
+
+	/** This method creates a new MandelbrotConfig that is the same as the old config except that the ColorScheme is changed to colorScheme.
+	 * 
+	 * @param colorScheme
+	 * @param old
+	 */
+	public MandelbrotConfig(ColorScheme colorScheme, MandelbrotConfig old) {
+		this.x = old.getCenter().x;
+		this.y = old.getCenter().y;
+		this.zoom = old.zoom;
+		this.maxDwell = old.maxDwell;
+		this.palette = old.palette;
+		this.colorScheme = colorScheme;
 	}
 }

@@ -38,10 +38,6 @@ public class EscapeTimeColorScheme implements ColorScheme{
 		MandelbrotPointData castData = (MandelbrotPointData)data;
 		MandelbrotConfig castConfig = (MandelbrotConfig)config;
 		
-		if(castData.getEscapeTime() == -1){
-			return Color.black;
-		}
-		
 		double log_zn = Math.log(castData.getZValues().get(castData.getZValues().size()-1).x*castData.getZValues().get(castData.getZValues().size()-1).x+castData.getZValues().get(castData.getZValues().size()-1).y*castData.getZValues().get(castData.getZValues().size()-1).y)/2;
 		double nu = Math.log(log_zn/LOG2)/LOG2;
 		
@@ -84,10 +80,5 @@ public class EscapeTimeColorScheme implements ColorScheme{
 		double b = b1*(1 - amount) + b2*amount;
 		
 		return new Color((int)r, (int)g, (int)b);
-	}
-
-	@Override
-	public boolean isReady(PointData data, FractalConfig config){
-		return true;
 	}
 }

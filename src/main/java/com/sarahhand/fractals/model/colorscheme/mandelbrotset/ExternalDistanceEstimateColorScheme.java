@@ -33,10 +33,6 @@ public class ExternalDistanceEstimateColorScheme implements ColorScheme{
 		MandelbrotPointData castData = (MandelbrotPointData)data;
 		MandelbrotConfig castConfig = (MandelbrotConfig)config;
 		
-		if(castData.getEscapeTime() == -1){
-			return Color.black;
-		}
-		
 		ComplexNumber pnc = castData.getZValues().get(castData.getEscapeTime());
 		double absPnc = Math.sqrt(pnc.x*pnc.x+pnc.y*pnc.y);
 		
@@ -91,24 +87,5 @@ public class ExternalDistanceEstimateColorScheme implements ColorScheme{
 		double b = b1*(1 - amount) + b2*amount;
 		
 		return new Color((int)r, (int)g, (int)b);
-	}
-
-	@Override
-	public boolean isReady(PointData data, FractalConfig config){
-		
-		if(!(data instanceof MandelbrotPointData)){
-			
-			throw new IllegalArgumentException("data must be instance of MandelbrotPointData");
-		}
-		
-		if(!(config instanceof MandelbrotConfig)){
-			
-			throw new IllegalArgumentException("config must be instance of MandelbrotConfig");
-		}
-
-		MandelbrotPointData castData = (MandelbrotPointData)data;
-		MandelbrotConfig castConfig = (MandelbrotConfig)config;
-		
-		return castData.getZValues().size() > castConfig.getMaxDwell();
 	}
 }

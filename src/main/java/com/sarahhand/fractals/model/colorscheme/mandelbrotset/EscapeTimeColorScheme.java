@@ -3,6 +3,7 @@ package com.sarahhand.fractals.model.colorscheme.mandelbrotset;
 import java.awt.Color;
 
 import com.sarahhand.fractals.model.ColorPalette;
+import com.sarahhand.fractals.model.ComplexNumber;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.MandelbrotConfig;
 import com.sarahhand.fractals.model.MandelbrotPointData;
@@ -38,7 +39,9 @@ public class EscapeTimeColorScheme implements ColorScheme{
 		MandelbrotPointData castData = (MandelbrotPointData)data;
 		MandelbrotConfig castConfig = (MandelbrotConfig)config;
 		
-		double log_zn = Math.log(castData.getZValues().get(castData.getZValues().size()-1).x*castData.getZValues().get(castData.getZValues().size()-1).x+castData.getZValues().get(castData.getZValues().size()-1).y*castData.getZValues().get(castData.getZValues().size()-1).y)/2;
+		ComplexNumber z = castData.getAllZValues().get(castData.getAllZValues().size()-1);
+		
+		double log_zn = Math.log(z.x*z.x+z.y*z.y)/2;
 		double nu = Math.log(log_zn/LOG2)/LOG2;
 		
 		double interpolateValue = (double)castData.getEscapeTime() + 1.0 - nu;

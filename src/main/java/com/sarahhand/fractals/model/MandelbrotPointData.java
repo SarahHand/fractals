@@ -17,10 +17,10 @@ public class MandelbrotPointData implements PointData{
 	 */
 	private List<ComplexNumber> allZValues;
 	
-	public MandelbrotPointData(Double location, int escapeTime, List<ComplexNumber> z){
+	public MandelbrotPointData(Double location, int escapeTime, List<ComplexNumber> allZValues){
 		this.location = location;
 		this.escapeTime = escapeTime;
-		this.allZValues = z;
+		this.allZValues = allZValues;
 	}
 	
 	public Double getLocation(){
@@ -29,7 +29,7 @@ public class MandelbrotPointData implements PointData{
 	public int getEscapeTime(){
 		return escapeTime;
 	}
-	public List<ComplexNumber> getZValues(){
+	public List<ComplexNumber> getAllZValues(){
 		return allZValues;
 	}
 }

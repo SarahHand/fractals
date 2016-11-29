@@ -33,17 +33,14 @@ public class ExternalDistanceEstimateColorScheme implements ColorScheme{
 		MandelbrotPointData castData = (MandelbrotPointData)data;
 		MandelbrotConfig castConfig = (MandelbrotConfig)config;
 		
-		ComplexNumber pnc = castData.getZValues().get(castData.getEscapeTime());
+		ComplexNumber pnc = castData.getAllZValues().get(castData.getEscapeTime());
 		double absPnc = Math.sqrt(pnc.x*pnc.x+pnc.y*pnc.y);
 		
-		ComplexNumber one = new ComplexNumber(1, 0);
-		ComplexNumber two = new ComplexNumber(2, 0);
-		
-		ComplexNumber partialC = one;
+		ComplexNumber partialC = ComplexNumber.ONE;
 		
 		for(int n = 0; n < castData.getEscapeTime(); n++){
 			
-			partialC = two.multiply(castData.getZValues().get(n).multiply(partialC)).add(one);
+			partialC = ComplexNumber.TWO.multiply(castData.getAllZValues().get(n).multiply(partialC)).add(ComplexNumber.ONE);
 		}
 		
 		double absPartialC = Math.sqrt(partialC.x*partialC.x+partialC.y*partialC.y);

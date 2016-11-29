@@ -1,9 +1,9 @@
 package com.sarahhand.fractals.view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -18,11 +18,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -34,6 +38,7 @@ import com.sarahhand.fractals.json.ConfigSaverLoader;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.FractalType;
 import com.sarahhand.fractals.model.MandelbrotConfig;
+import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 import com.sarahhand.fractals.viewer.FractalViewer;
 import com.sarahhand.fractals.viewer.FractalViewerFactory;
 
@@ -59,6 +64,8 @@ public class FractalsUI {
 	private JButton loadFractalConfig;
 	private JButton saveImage;
 	private JButton createColorPalette;
+
+	private JComboBox<ColorScheme> colorSchemeComboBox;
 
 	final int FRAME_WIDTH = 800;
 	final int FRAME_HEIGHT = 600;
@@ -89,10 +96,16 @@ public class FractalsUI {
 		buttonPanel.add(saveImage);
 		buttonPanel.add(createColorPalette);
 
+		colorSchemeComboBox = new JComboBox<>();
+		colorSchemeComboBox.setRenderer(new ColorSchemeListCellRenderer());
+		loadColorSchemes(fractalConfig.getColorScheme());
+		buttonPanel.add(colorSchemeComboBox);
+
 		saveFractalConfig.addActionListener(new SaveConfigActionListener());
 		loadFractalConfig.addActionListener(new LoadConfigActionListener());
 		saveImage.addActionListener(new SaveImageActionListener());
 		createColorPalette.addActionListener(new CreateColorPaletteListener());
+		colorSchemeComboBox.addActionListener(new ColorSchemeComboBoxListener());
 
 		FractalsMouseListener mouseListener = new FractalsMouseListener();
 		frame.addMouseListener(mouseListener);
@@ -103,6 +116,50 @@ public class FractalsUI {
 
 		frame.pack();
 		frame.setVisible(true);
+	}
+
+	/** This method is used to add all of the ColorSchemes to colorSchemeComboBox.
+	 * It also sets the selected ColorScheme to the one in the FractalConfig.
+	 * 
+	 * @param selectedColorScheme
+	 */
+	private void loadColorSchemes(ColorScheme selectedColorScheme) {
+		DefaultComboBoxModel<ColorScheme> model = (DefaultComboBoxModel<ColorScheme>)this.colorSchemeComboBox.getModel();
+		for (ColorScheme scheme : viewer.getSupportedColorSchemes()) {
+			model.addElement(scheme);
+		}
+		setSelectedColorSchemes(selectedColorScheme);
+	}
+	
+	/** This method updates the selected ColorScheme to the one in the FractalConfig.
+	 * 
+	 * @param selectedColorScheme
+	 */
+	private void setSelectedColorSchemes(ColorScheme selectedColorScheme) {
+		DefaultComboBoxModel<ColorScheme> model = (DefaultComboBoxModel<ColorScheme>)this.colorSchemeComboBox.getModel();
+		model.setSelectedItem(selectedColorScheme);
+	}
+
+	/** This class is used to add ColorSchemes to colorSchemeComboBox,
+	 * but it only shows the name of the ColorScheme.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class ColorSchemeListCellRenderer extends DefaultListCellRenderer {
+
+		private static final long serialVersionUID = -8726267565122387060L;
+
+		@Override
+		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+
+			if (value instanceof ColorScheme) {
+				value = ((ColorScheme)value).getName();
+			}
+
+			return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+		}
+
 	}
 
 	/** This class is the MouseListener for the frame. It is used for zooming in and out. It also handles panning.
@@ -249,6 +306,7 @@ public class FractalsUI {
 				fractalConfig = (MandelbrotConfig)saverLoader.load(fractalConfig.getClass(), fileChooser.getSelectedFile().getAbsolutePath());
 				viewer.setConfig(fractalConfig);
 				image.setImage(viewer.getView(frameDimension));
+				setSelectedColorSchemes(fractalConfig.getColorScheme());
 				frame.repaint();
 			}
 		}
@@ -296,6 +354,22 @@ public class FractalsUI {
 			ChangeColorPalette changeCP = new ChangeColorPalette();
 			Thread changePaletteThread = new Thread(new ChangePaletteRunnable(changeCP));
 			changePaletteThread.start();
+		}
+	}
+	
+	/** This class is the ActionListener for the colorSchemeComboBox JComboBox.
+	 * It is used to detect when a different item is selected in the drop-down.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class ColorSchemeComboBoxListener implements ActionListener {
+		
+		public void actionPerformed(ActionEvent ae) {
+			fractalConfig = new MandelbrotConfig((ColorScheme)colorSchemeComboBox.getSelectedItem(), (MandelbrotConfig)fractalConfig);
+			viewer.setConfig(fractalConfig);
+			image.setImage(viewer.getView(frameDimension));
+			frame.repaint();
 		}
 	}
 

@@ -14,15 +14,19 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sarahhand.fractals.model.ColorPalette;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.MandelbrotConfig;
 import com.sarahhand.fractals.model.MandelbrotPointData;
 import com.sarahhand.fractals.model.colorscheme.ColorScheme;
+import com.sarahhand.fractals.model.colorscheme.mandelbrotset.BlackColorScheme;
 import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
 
 /**
- * Implements <code>MandelbrotViewer</code>.
+ * Implements <code>FractalViewer</code> and draws the Mandelbrot Set.<p>
+ * 
+ * For more information about the mathematics of the<br>
+ * Mandelbrot Set, see the
+ * <a href="https://en.wikipedia.org/wiki/Mandelbrot_set">Wikipedia page</a>.
  * 
  * @author J9465812
  * @see FractalViewer
@@ -259,6 +263,6 @@ class MandelbrotViewerImpl implements FractalViewer{
 
 	@Override
 	public List<ColorScheme> getSupportedColorSchemes(){
-		return Arrays.asList(new EscapeTimeColorScheme());
+		return Arrays.asList(new BlackColorScheme(), new EscapeTimeColorScheme());
 	}
 }

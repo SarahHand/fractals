@@ -6,15 +6,20 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.PointData;
+import com.sarahhand.fractals.model.colorscheme.mandelbrotset.BlackColorScheme;
 import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
 
-// @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
+/**
+ * Interface that represents ways of coloring fractals.
+ * @author J9465812
+ */
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = EscapeTimeColorScheme.class, name = "EscapeTime") 
+    @JsonSubTypes.Type(value = EscapeTimeColorScheme.class, name = "EscapeTime"),
+    @JsonSubTypes.Type(value = BlackColorScheme.class, name = "Black") 
 })
 public interface ColorScheme{
 	

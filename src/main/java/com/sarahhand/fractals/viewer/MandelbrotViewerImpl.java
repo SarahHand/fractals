@@ -18,7 +18,6 @@ import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.MandelbrotConfig;
 import com.sarahhand.fractals.model.MandelbrotPointData;
 import com.sarahhand.fractals.model.colorscheme.ColorScheme;
-import com.sarahhand.fractals.model.colorscheme.mandelbrotset.BlackColorScheme;
 import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
 
 /**
@@ -263,6 +262,6 @@ class MandelbrotViewerImpl implements FractalViewer{
 
 	@Override
 	public List<ColorScheme> getSupportedColorSchemes(){
-		return Arrays.asList(new BlackColorScheme(), new EscapeTimeColorScheme());
+		return Arrays.asList(new EscapeTimeColorScheme());
 	}
 }

@@ -22,6 +22,10 @@ public class JsonReaderWriter{
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	
+	/**
+	 * The constructor.
+	 * @param pns
+	 */
 	public JsonReaderWriter(PropertyNamingStrategy pns){
 		mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

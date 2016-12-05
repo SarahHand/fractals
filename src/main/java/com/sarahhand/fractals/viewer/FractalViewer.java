@@ -4,8 +4,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.util.List;
 
+import com.sarahhand.fractals.model.ColorScheme;
 import com.sarahhand.fractals.model.FractalConfig;
-import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 
 /**
  * Interface that draws a fractal.
@@ -22,6 +22,7 @@ public interface FractalViewer{
 	 * Generates an image of the fractal based on its current fractal config
 	 * and the specified dimensions.
 	 * @param dimensions
+	 * @return 
 	 */
 	public Image getView(Dimension dimensions);
 	
@@ -32,6 +33,7 @@ public interface FractalViewer{
 	 * @param dimensions
 	 * @param oldConfig the config used to generate oldImage
 	 * @param oldImage the previous image
+	 * @return 
 	 */
 	public Image getViewPanning(Dimension dimensions, FractalConfig oldConfig, Image oldImage);
 
@@ -49,6 +51,7 @@ public interface FractalViewer{
 	
 	/**
 	 * Returns a list of color schemes supported by this viewer.
+	 * @return 
 	 */
 	public List<ColorScheme> getSupportedColorSchemes();
 }

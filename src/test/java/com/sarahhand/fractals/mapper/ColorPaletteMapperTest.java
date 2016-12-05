@@ -12,6 +12,17 @@ import org.junit.Test;
 
 import com.sarahhand.fractals.model.ColorPalette;
 
+/**
+ * Test ColorPaletteMapper
+ * <p>
+ * <b>Cases:</b><ul>
+ * <li>Normal Case
+ * <li>Null Arguments
+ * <li>Illegal Arguments
+ * @author J9465812
+ *
+ */
+@SuppressWarnings("javadoc")
 public class ColorPaletteMapperTest{
 	
 	@Test

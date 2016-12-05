@@ -1,7 +1,8 @@
 package com.sarahhand.fractals.viewer;
 
+import com.sarahhand.fractals.mandelbrotset.MandelbrotConfig;
+import com.sarahhand.fractals.mandelbrotset.MandelbrotViewer;
 import com.sarahhand.fractals.model.FractalType;
-import com.sarahhand.fractals.model.MandelbrotConfig;
 
 /**
  * Factory for <code>FractalViewer</code>.
@@ -21,10 +22,9 @@ public class FractalViewerFactory{
 	public FractalViewer createViewer(FractalType type){
 		switch (type) {
 			case MANDELBROT_SET : 
-				return new MandelbrotViewerImpl(MandelbrotConfig.DEAFAULT_CONFIG);
+				return new MandelbrotViewer(MandelbrotConfig.DEAFAULT_CONFIG);
 			default : 
-				return new MandelbrotViewerImpl(MandelbrotConfig.DEAFAULT_CONFIG);
+				return new MandelbrotViewer(MandelbrotConfig.DEAFAULT_CONFIG);
 		}
-		
 	}
 }

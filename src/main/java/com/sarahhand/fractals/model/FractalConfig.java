@@ -2,8 +2,6 @@ package com.sarahhand.fractals.model;
 
 import java.awt.geom.Point2D.Double;
 
-import com.sarahhand.fractals.model.colorscheme.ColorScheme;
-
 /**
  * Marker interface for a fractal's configuration information.
  */
@@ -29,10 +27,36 @@ public interface FractalConfig{
 	public int getMaxDwell();
 	
 	/**
-	 * The current color palette of the fractal.
+	 * Returns the color scheme
 	 * @return
 	 */
-	public ColorPalette getPalette();
-	
 	public ColorScheme getColorScheme();
+	
+	/**
+	 * Sets the zoom.
+	 * @param zoom 
+	 * @return
+	 */
+	public void setZoom(double zoom);
+	
+	/**
+	 * Sets the max dwell.
+	 * @param maxDwell 
+	 * @return
+	 */
+	public void setMaxDwell(int maxDwell);
+
+	/**
+	 * Sets the colorScheme.s
+	 * @param colorScheme 
+	 * @return
+	 */
+	public void setColorScheme(ColorScheme colorScheme);
+	
+	/**
+	 * Sets the center.
+	 * @param center 
+	 * @return
+	 */
+	public void setCenter(Double center);
 }

@@ -1,4 +1,4 @@
-package com.sarahhand.fractals.viewer;
+package com.sarahhand.fractals.mandelbrotset;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,14 +14,14 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sarahhand.fractals.mandelbrotset.colorscheme.BlackColorScheme;
+import com.sarahhand.fractals.mandelbrotset.colorscheme.EscapeTimeColorScheme;
+import com.sarahhand.fractals.mandelbrotset.colorscheme.ExternalDistanceEstimateColorScheme;
+import com.sarahhand.fractals.model.ColorScheme;
 import com.sarahhand.fractals.model.ComplexNumber;
 import com.sarahhand.fractals.model.FractalConfig;
-import com.sarahhand.fractals.model.MandelbrotConfig;
-import com.sarahhand.fractals.model.MandelbrotPointData;
-import com.sarahhand.fractals.model.colorscheme.ColorScheme;
-import com.sarahhand.fractals.model.colorscheme.mandelbrotset.BlackColorScheme;
-import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
-import com.sarahhand.fractals.model.colorscheme.mandelbrotset.ExternalDistanceEstimateColorScheme;
+import com.sarahhand.fractals.viewer.FractalViewer;
 
 /**
  * Implements <code>FractalViewer</code> and draws the Mandelbrot Set.<p>
@@ -34,11 +34,14 @@ import com.sarahhand.fractals.model.colorscheme.mandelbrotset.ExternalDistanceEs
  * @see FractalViewer
  */
 
-class MandelbrotViewerImpl implements FractalViewer{
+public class MandelbrotViewer implements FractalViewer{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	private static final double LOG2 = Math.log(2);
 	private static final int MIN_SIZE = 10;
+	
+	/**
+	 * The square of the maximum value z can reach before it is assumed to diverge.
+	 */
 	public static final int MAX_Z = 1000000;
 	
 //	public static final int RECT_BUFFER = 2000;
@@ -78,8 +81,6 @@ class MandelbrotViewerImpl implements FractalViewer{
 		g.drawImage(oldImage, x, y, null);
 		
 		Rectangle predrawnPoints = new Rectangle(x, y, oldImage.getWidth(null), oldImage.getHeight(null));
-		
-		Rectangle frame = new Rectangle(dimensions);
 		
 		for(int m = 0; m < dimensions.width; m++){
 			for(int n = 0; n < dimensions.width; n++){
@@ -204,7 +205,11 @@ class MandelbrotViewerImpl implements FractalViewer{
 		return config;
 	}
 
-	MandelbrotViewerImpl(FractalConfig config){
+	/**
+	 * The constructor.
+	 * @param config
+	 */
+	public MandelbrotViewer(FractalConfig config){
 		if (config instanceof MandelbrotConfig) {
 			this.config = (MandelbrotConfig)config;
 		} else {

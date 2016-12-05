@@ -17,10 +17,15 @@ import com.sarahhand.fractals.model.ColorPalette;
  * @author J9465812
  */
 
+@SuppressWarnings("javadoc")
 public class ColorPaletteMapper{
 	
 	private static final ColorPaletteMapper defaultMapper = new ColorPaletteMapper();
 	
+	/**
+	 * Gets the default <code>ColorPaletteMapper</code>.
+	 * @return
+	 */
 	public static ColorPaletteMapper getDefaultMapper(){
 		return defaultMapper;
 	}

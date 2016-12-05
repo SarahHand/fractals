@@ -1,14 +1,12 @@
-package com.sarahhand.fractals.model.colorscheme;
+package com.sarahhand.fractals.model;
 
 import java.awt.Color;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.sarahhand.fractals.model.FractalConfig;
-import com.sarahhand.fractals.model.PointData;
-import com.sarahhand.fractals.model.colorscheme.mandelbrotset.BlackColorScheme;
-import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
-import com.sarahhand.fractals.model.colorscheme.mandelbrotset.ExternalDistanceEstimateColorScheme;
+import com.sarahhand.fractals.mandelbrotset.colorscheme.BlackColorScheme;
+import com.sarahhand.fractals.mandelbrotset.colorscheme.EscapeTimeColorScheme;
+import com.sarahhand.fractals.mandelbrotset.colorscheme.ExternalDistanceEstimateColorScheme;
 
 /**
  * Interface that represents ways of coloring fractals.
@@ -25,7 +23,14 @@ import com.sarahhand.fractals.model.colorscheme.mandelbrotset.ExternalDistanceEs
 })
 public interface ColorScheme{
 	
+	@SuppressWarnings("javadoc")
 	public String getName();
 	
+	/**
+	 * Uses <code>data</code> and <code>config</code> t create a color.
+	 * @param data
+	 * @param config
+	 * @return
+	 */
 	public Color getColor(PointData data, FractalConfig config);
 }

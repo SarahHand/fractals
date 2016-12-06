@@ -14,6 +14,11 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.sarahhand.fractals.model.ColorPalette;
 import com.sarahhand.json.JsonReaderWriter;
 
+/** This class is used for saving and loading ColorPalettes into JSON files.
+ * 
+ * @author M00031
+ *
+ */
 public class ColorPaletteSaverLoader {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());

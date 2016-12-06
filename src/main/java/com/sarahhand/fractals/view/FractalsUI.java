@@ -104,13 +104,8 @@ public class FractalsUI {
 		optionsMenu = new JMenu("Options");
 		createColorPaletteMenuItem = new JMenuItem("Create Color Palette");
 		selectColorSchemeMenu = new JMenu("Select Color Scheme");
-		ButtonGroup bg = new ButtonGroup();
-		for(ColorScheme scheme : viewer.getSupportedColorSchemes()) {
-			JRadioButtonMenuItem newRadioButton = new JRadioButtonMenuItem(scheme.getName());
-			newRadioButton.addActionListener(new ColorSchemeMenuItemsListener(scheme.getName()));
-			bg.add(newRadioButton);
-			selectColorSchemeMenu.add(newRadioButton);
-		}
+		setSelectedColorScheme();
+		
 		optionsMenu.add(createColorPaletteMenuItem);
 		optionsMenu.add(selectColorSchemeMenu);
 
@@ -133,7 +128,21 @@ public class FractalsUI {
 		frame.pack();
 		frame.setVisible(true);
 	}
-
+	
+	private void setSelectedColorScheme() {
+		selectColorSchemeMenu.removeAll();
+		ButtonGroup bg = new ButtonGroup();
+		for(ColorScheme scheme : viewer.getSupportedColorSchemes()) {
+			JRadioButtonMenuItem newRadioButton = new JRadioButtonMenuItem(scheme.getName());
+			newRadioButton.addActionListener(new ColorSchemeMenuItemsListener(scheme.getName()));
+			bg.add(newRadioButton);
+			selectColorSchemeMenu.add(newRadioButton);
+			if(fractalConfig.getColorScheme().getName().equals(scheme.getName())) {
+				newRadioButton.setSelected(true);
+			}
+		}
+	}
+	
 	/** This class is the MouseListener for the frame. It is used for zooming in and out. It also handles panning.
 	 * 
 	 * @author M00031
@@ -278,6 +287,7 @@ public class FractalsUI {
 				image.setImage(viewer.getView(frameDimension));
 				frame.repaint();
 			}
+			setSelectedColorScheme();
 		}
 	}
 

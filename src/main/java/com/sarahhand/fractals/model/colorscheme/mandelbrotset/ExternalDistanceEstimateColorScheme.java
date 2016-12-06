@@ -11,18 +11,12 @@ import com.sarahhand.fractals.model.MandelbrotPointData;
 import com.sarahhand.fractals.model.PointData;
 import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 
-/**
- * The default color scheme.
- * @author J9465812
- */
-@JsonTypeName("EscapeTime")
-public class EscapeTimeColorScheme implements ColorScheme{
-	
-	private static final double LOG2 = Math.log(2);
+@JsonTypeName("ExternalDistance")
+public class ExternalDistanceEstimateColorScheme implements ColorScheme{
 
 	@Override
 	public String getName(){
-		return "Escape Time";
+		return "Exterior Distance";
 	}
 
 	@Override
@@ -41,14 +35,21 @@ public class EscapeTimeColorScheme implements ColorScheme{
 		MandelbrotPointData castData = (MandelbrotPointData)data;
 		MandelbrotConfig castConfig = (MandelbrotConfig)config;
 		
-		ComplexNumber z = castData.getAllZValues().get(castData.getAllZValues().size()-1);
+		ComplexNumber pnc = castData.getAllZValues().get(castData.getEscapeTime());
+		double absPnc = Math.sqrt(pnc.x*pnc.x+pnc.y*pnc.y);
 		
-		double log_zn = Math.log(z.x*z.x+z.y*z.y)/2;
-		double nu = Math.log(log_zn/LOG2)/LOG2;
+		ComplexNumber partialC = ComplexNumber.ONE;
 		
-		double interpolateValue = (double)castData.getEscapeTime() + 1.0 - nu;
+		for(int n = 0; n < castData.getEscapeTime(); n++){
+			
+			partialC = ComplexNumber.TWO.multiply(castData.getAllZValues().get(n).multiply(partialC)).add(ComplexNumber.ONE);
+		}
 		
-		interpolateValue = Math.log(Math.abs(interpolateValue))/Math.log(1.01);
+		double absPartialC = Math.sqrt(partialC.x*partialC.x+partialC.y*partialC.y);
+		
+		double b = 2 * absPnc*Math.log(absPnc)/absPartialC;
+		
+		double interpolateValue = Math.log(b)/Math.log(1.05);
 		
 		Color col1 = castConfig.getPalette().getColor(((int)(Math.floor(interpolateValue)) %
 				ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %

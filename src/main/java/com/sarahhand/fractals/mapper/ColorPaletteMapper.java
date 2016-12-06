@@ -17,7 +17,6 @@ import com.sarahhand.fractals.model.ColorPalette;
  * @author J9465812
  */
 
-@SuppressWarnings("javadoc")
 public class ColorPaletteMapper{
 	
 	private static final ColorPaletteMapper defaultMapper = new ColorPaletteMapper();

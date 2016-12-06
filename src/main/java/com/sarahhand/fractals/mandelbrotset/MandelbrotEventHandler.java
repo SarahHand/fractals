@@ -40,7 +40,7 @@ public class MandelbrotEventHandler implements FractalEventHandler{
 	 * @param ui
 	 */
 	public MandelbrotEventHandler(FractalsUI ui){
-		viewer = (MandelbrotViewer) new FractalViewerFactory().createViewer(FractalType.MANDELBROT_SET);
+		this.viewer = (MandelbrotViewer) new FractalViewerFactory().createViewer(FractalType.MANDELBROT_SET);
 		this.ui = ui;
 	}
 	@Override

@@ -91,7 +91,7 @@ public class FractalsUI {
 
 		colorSchemeComboBox = new JComboBox<>();
 		colorSchemeComboBox.setRenderer(new ColorSchemeListCellRenderer());
-		loadColorSchemes(MandelbrotConfig.DEAFAULT_CONFIG.getColorScheme());
+		loadColorSchemes(events.getColorScheme());
 		buttonPanel.add(colorSchemeComboBox);
 
 		saveFractalConfig.addActionListener(new SaveConfigActionListener());

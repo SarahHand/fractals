@@ -23,11 +23,14 @@ import com.sarahhand.fractals.mandelbrotset.colorscheme.ExternalDistanceEstimate
 })
 public interface ColorScheme{
 	
-	@SuppressWarnings("javadoc")
+	/**
+	 * Gets the name that should be shown to the user.
+	 * @return
+	 */
 	public String getName();
 	
 	/**
-	 * Uses <code>data</code> and <code>config</code> t create a color.
+	 * Uses <code>data</code> and <code>config</code> to create a color.
 	 * @param data
 	 * @param config
 	 * @return

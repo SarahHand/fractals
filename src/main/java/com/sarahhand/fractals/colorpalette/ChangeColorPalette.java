@@ -7,11 +7,15 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
+import com.sarahhand.fractals.json.ColorPaletteSaverLoader;
 import com.sarahhand.fractals.mapper.ColorPaletteMapper;
 import com.sarahhand.fractals.model.ColorPalette;
 
@@ -28,14 +32,19 @@ public class ChangeColorPalette {
 	private List<ColorPanel> colorPanels;
 
 	private volatile ColorPalette newColorPalette;
+	private ColorPalette temporaryColorPalette;
 
-	private JPanel topPanel;
-	private JButton changeEndColors;
-	private JButton resetColorPalette;
+	private JMenuBar menuBar;
 
-	private JPanel bottomPanel;
-	private JButton addColor;
-	private JButton doneButton;
+	private JMenu fileMenu;
+	private JMenuItem revertMenuItem;
+	private JMenuItem saveMenuItem;
+	private JMenuItem loadMenuItem;
+	private JMenuItem doneMenuItem;
+
+	private JMenu optionsMenu;
+	private JMenuItem addColorMenuItem;
+	private JMenuItem changeEndColorsMenuItem;
 
 	private final int FRAME_WIDTH = 500;
 	private final int FRAME_HEIGHT = 500;
@@ -44,7 +53,7 @@ public class ChangeColorPalette {
 	public ColorPalette getCreatedColorPalette() {
 		return newColorPalette;
 	}
-	
+
 	public int getColorPaletteLength() {
 		return COLOR_PALETTE_LENGTH;
 	}
@@ -59,45 +68,78 @@ public class ChangeColorPalette {
 
 		colorPanels = new ArrayList<>();
 
-		topPanel = new JPanel();
-		topPanel.setLayout(new BorderLayout());
-		changeEndColors = new JButton("Change End Colors");
-		resetColorPalette = new JButton("Reset");
-		topPanel.add(changeEndColors, BorderLayout.SOUTH);
-		topPanel.add(resetColorPalette, BorderLayout.NORTH);
+		menuBar = new JMenuBar();
 
-		bottomPanel = new JPanel();
-		bottomPanel.setLayout(new BorderLayout());
-		addColor = new JButton("Add Color");
-		doneButton = new JButton("Done");
-		bottomPanel.add(addColor, BorderLayout.NORTH);
-		bottomPanel.add(doneButton, BorderLayout.SOUTH);
+		fileMenu = new JMenu("File");
+		revertMenuItem = new JMenuItem("Revert To Original");
+		saveMenuItem = new JMenuItem("Save");
+		loadMenuItem = new JMenuItem("Load(This will exit the ColorPalette Creator)");
+		doneMenuItem = new JMenuItem("Done");
+		fileMenu.add(revertMenuItem);
+		fileMenu.add(saveMenuItem);
+		fileMenu.add(loadMenuItem);
+		fileMenu.add(doneMenuItem);
 
-		addColor.addActionListener(new ActionListener() {
+		optionsMenu = new JMenu("Options");
+		addColorMenuItem = new JMenuItem("Add Color");
+		changeEndColorsMenuItem = new JMenuItem("Change End Colors");
+		optionsMenu.add(addColorMenuItem);
+		optionsMenu.add(changeEndColorsMenuItem);
+
+		menuBar.add(fileMenu);
+		menuBar.add(optionsMenu);
+
+		saveMenuItem.addActionListener(new ActionListener() {
+
+			private ColorPaletteSaverLoader saverLoader = ColorPaletteSaverLoader.getDefaultConfigSaverLoader();
+			private JFileChooser fileChooser = new JFileChooser();
+
+			public void actionPerformed(ActionEvent ae) {
+				createColorPalette();
+				if(fileChooser.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
+					saverLoader.save(newColorPalette, fileChooser.getSelectedFile().getAbsolutePath());
+				}
+			}
+		});
+		loadMenuItem.addActionListener(new ActionListener() {
+
+			private ColorPaletteSaverLoader saverLoader = ColorPaletteSaverLoader.getDefaultConfigSaverLoader();
+			private JFileChooser fileChooser = new JFileChooser();
+
+			public void actionPerformed(ActionEvent ae) {
+				if(fileChooser.showDialog(null, "Load") == JFileChooser.APPROVE_OPTION) {
+					temporaryColorPalette = saverLoader.load(ColorPalette.class,
+							fileChooser.getSelectedFile().getAbsolutePath());
+					frame.setVisible(false);
+					newColorPalette = temporaryColorPalette;
+				}
+			}
+		});
+		addColorMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				createColor();
 			}
 		});
-		changeEndColors.addActionListener(new ActionListener() {
+		changeEndColorsMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				changeEndColors.setBackground(JColorChooser.showDialog(null, "Color Chooser", Color.BLACK));
+				changeEndColorsMenuItem.setBackground(JColorChooser.showDialog(null, "Color Chooser", Color.BLACK));
 			}
 		});
-		doneButton.addActionListener(new ActionListener() {
+		doneMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				newColorPalette = createColorPalette();
+				createColorPalette();
+				newColorPalette = temporaryColorPalette;
 				frame.setVisible(false);
 			}
 		});
-		resetColorPalette.addActionListener(new ActionListener() {
+		revertMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				newColorPalette = ColorPalette.DEFAULT_PALETTE;
 				frame.setVisible(false);
 			}
 		});
 
-		frame.add(bottomPanel, BorderLayout.SOUTH);
-		frame.add(topPanel, BorderLayout.NORTH);
+		frame.add(menuBar, BorderLayout.NORTH);
 		frame.add(colorPanelsPanel, BorderLayout.CENTER);
 
 		frame.setVisible(true);
@@ -129,22 +171,20 @@ public class ChangeColorPalette {
 		repaint();
 	}
 
-	/** This will create a colorPalette using the method XXXXX() from the class XXXXX.
+	/** This will create a colorPalette and set newColorPalette equal to it.
 	 */
-	private ColorPalette createColorPalette() {
+	private void createColorPalette() {
 		List<Color> colors = new ArrayList<>();
 		List<Integer> positions = new ArrayList<>();
-		colors.add(changeEndColors.getBackground());
+		colors.add(changeEndColorsMenuItem.getBackground());
 		positions.add(0);
 		for(int count = 0; count < colorPanels.size(); count++) {
 			colors.add(colorPanels.get(count).getColor());
 			positions.add(colorPanels.get(count).getPosition());
 		}
-		colors.add(changeEndColors.getBackground());
+		colors.add(changeEndColorsMenuItem.getBackground());
 		positions.add(COLOR_PALETTE_LENGTH);
 
-		frame.setVisible(false);
-
-		return ColorPaletteMapper.getDefaultMapper().map(colors, positions);
+		temporaryColorPalette = ColorPaletteMapper.getDefaultMapper().map(colors, positions);
 	}
 }

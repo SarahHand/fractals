@@ -1,13 +1,14 @@
-package com.sarahhand.fractals.model;
+package com.sarahhand.fractals.mandelbrotset;
 
 import java.awt.geom.Point2D.Double;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sarahhand.fractals.model.colorscheme.ColorScheme;
-import com.sarahhand.fractals.model.colorscheme.mandelbrotset.EscapeTimeColorScheme;
-import com.sarahhand.fractals.model.colorscheme.mandelbrotset.ExternalDistanceEstimateColorScheme;
+import com.sarahhand.fractals.mandelbrotset.colorscheme.EscapeTimeColorScheme;
+import com.sarahhand.fractals.model.ColorPalette;
+import com.sarahhand.fractals.model.ColorScheme;
+import com.sarahhand.fractals.model.FractalConfig;
 
 /**
  * Class that stores information about a particular image of the Mandelbrot Set.
@@ -22,6 +23,9 @@ public class MandelbrotConfig implements FractalConfig{
 	private static int MAX_DWELL_DEFAULT = 500;
 	private static ColorScheme COLOR_SCHEME_DEFAULT = new EscapeTimeColorScheme();
 	
+	/**
+	 * The default MandelbrotConfig.
+	 */
 	public static final MandelbrotConfig DEAFAULT_CONFIG = new MandelbrotConfig();
 
 	private double x = CENTER_X_DEFAULT;
@@ -31,10 +35,18 @@ public class MandelbrotConfig implements FractalConfig{
 	private ColorPalette palette = ColorPalette.DEFAULT_PALETTE;
 	private ColorScheme colorScheme = COLOR_SCHEME_DEFAULT;
 	
+	/**
+	 * The current x position of the center.
+	 * @return
+	 */
 	public double getX(){
 		return x;
 	}
-
+	
+	/**
+	 * The current y position of the center.
+	 * @return
+	 */
 	public double getY(){
 		return y;
 	}
@@ -52,13 +64,41 @@ public class MandelbrotConfig implements FractalConfig{
 		return maxDwell;
 	}
 	
-	@Override
+	/**
+	 * The current color palette.
+	 * @return
+	 */
 	public ColorPalette getPalette() {
 		return palette;
 	}
-	
+
 	public ColorScheme getColorScheme(){
 		return colorScheme;
+	}
+	
+	public void setZoom(double zoom){
+		this.zoom = zoom;
+	}
+
+	public void setMaxDwell(int maxDwell){
+		this.maxDwell = maxDwell;
+	}
+	
+	/**
+	 * Sets the current color palette.
+	 * @param palette
+	 */
+	public void setPalette(ColorPalette palette){
+		this.palette = palette;
+	}
+
+	public void setColorScheme(ColorScheme colorScheme){
+		this.colorScheme = colorScheme;
+	}
+	
+	public void setCenter(Double center) {
+		x = center.x;
+		y = center.y;
 	}
 	
 	/**
@@ -102,37 +142,5 @@ public class MandelbrotConfig implements FractalConfig{
 		this.zoom = zoom;
 		this.maxDwell = maxDwell;
 		this.palette = palette;
-	}
-
-	/**
-	 * Creates a new MandelbrotConfig using an existing config with a new zoom, center and maxDwell. It
-	 * uses the ColorPalette and the ColorScheme from the existing config.
-	 * 
-	 * @param center
-	 * @param zoom
-	 * @param maxdwell
-	 * @param old
-	 */
-	public MandelbrotConfig(Double center, double zoom, int maxDwell, MandelbrotConfig old) {
-		this.x = center.x;
-		this.y = center.y;
-		this.zoom = zoom;
-		this.maxDwell = maxDwell;
-		this.palette = old.palette;
-		this.colorScheme = old.colorScheme;
-	}
-
-	/** This method creates a new MandelbrotConfig that is the same as the old config except that the ColorScheme is changed to colorScheme.
-	 * 
-	 * @param colorScheme
-	 * @param old
-	 */
-	public MandelbrotConfig(ColorScheme colorScheme, MandelbrotConfig old) {
-		this.x = old.getCenter().x;
-		this.y = old.getCenter().y;
-		this.zoom = old.zoom;
-		this.maxDwell = old.maxDwell;
-		this.palette = old.palette;
-		this.colorScheme = colorScheme;
 	}
 }

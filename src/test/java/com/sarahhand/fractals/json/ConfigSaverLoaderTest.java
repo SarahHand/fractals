@@ -11,8 +11,18 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.sarahhand.fractals.json.ConfigSaverLoader;
-import com.sarahhand.fractals.model.MandelbrotConfig;
+import com.sarahhand.fractals.mandelbrotset.MandelbrotConfig;
 
+/**
+ * Test ConfigSaverLoader
+ * <p>
+ * <b>Cases:<b><ul>
+ * <li>Saving
+ * <li>Loading
+ * @author J9465812
+ *
+ */
+@SuppressWarnings("javadoc")
 public class ConfigSaverLoaderTest{
 
 	@Test

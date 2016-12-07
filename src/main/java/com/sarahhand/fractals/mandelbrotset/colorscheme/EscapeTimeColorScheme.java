@@ -1,15 +1,15 @@
-package com.sarahhand.fractals.model.colorscheme.mandelbrotset;
+package com.sarahhand.fractals.mandelbrotset.colorscheme;
 
 import java.awt.Color;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.sarahhand.fractals.mandelbrotset.MandelbrotConfig;
+import com.sarahhand.fractals.mandelbrotset.MandelbrotPointData;
 import com.sarahhand.fractals.model.ColorPalette;
+import com.sarahhand.fractals.model.ColorScheme;
 import com.sarahhand.fractals.model.ComplexNumber;
 import com.sarahhand.fractals.model.FractalConfig;
-import com.sarahhand.fractals.model.MandelbrotConfig;
-import com.sarahhand.fractals.model.MandelbrotPointData;
 import com.sarahhand.fractals.model.PointData;
-import com.sarahhand.fractals.model.colorscheme.ColorScheme;
 
 /**
  * The default color scheme.

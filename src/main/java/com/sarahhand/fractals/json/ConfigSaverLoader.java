@@ -26,7 +26,11 @@ public class ConfigSaverLoader{
 	private static final ConfigSaverLoader DEFAULT = new ConfigSaverLoader();
 
 	private ConfigSaverLoader(){}
-
+	
+	/**
+	 * Returns the default ConfigSaverLoader.
+	 * @return
+	 */
 	public static ConfigSaverLoader getDefaultConfigSaverLoader(){
 		return DEFAULT;
 	}

@@ -21,6 +21,10 @@ public class ColorPaletteMapper{
 	
 	private static final ColorPaletteMapper defaultMapper = new ColorPaletteMapper();
 	
+	/**
+	 * Gets the default <code>ColorPaletteMapper</code>.
+	 * @return
+	 */
 	public static ColorPaletteMapper getDefaultMapper(){
 		return defaultMapper;
 	}

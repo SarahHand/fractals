@@ -1,7 +1,6 @@
 package com.sarahhand.fractals.view;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -12,17 +11,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +29,6 @@ import com.sarahhand.fractals.colorpalette.ChangeColorPalette;
 import com.sarahhand.fractals.event.FractalEventHandler;
 import com.sarahhand.fractals.event.FractalEventHandlerFactory;
 import com.sarahhand.fractals.json.ConfigSaverLoader;
-import com.sarahhand.fractals.mandelbrotset.MandelbrotConfig;
 import com.sarahhand.fractals.model.ColorScheme;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.FractalType;
@@ -53,13 +50,18 @@ public class FractalsUI {
 	private ImageIcon image;
 	private JLabel imageLabel;
 
-	private JPanel buttonPanel;
-	private JButton saveFractalConfig;
-	private JButton loadFractalConfig;
-	private JButton saveImage;
-	private JButton createColorPalette;
+	private JMenuBar menuBar;
 
-	private JComboBox<ColorScheme> colorSchemeComboBox;
+	private JMenu fileMenu;
+	private JMenuItem saveMenuItem;
+	private JMenuItem loadMenuItem;
+	private JMenuItem saveImageMenuItem;
+	private JMenuItem exitMenuItem;
+
+	private JMenu optionsMenu;
+	private JMenuItem createColorPaletteMenuItem;
+
+	private JMenu selectColorSchemeMenu;
 
 	private final int FRAME_WIDTH = 800;
 	private final int FRAME_HEIGHT = 600;
@@ -79,30 +81,39 @@ public class FractalsUI {
 		image = new ImageIcon(events.getFractalViewer().getView(frameDimension));
 		imageLabel = new JLabel(image);
 
-		buttonPanel = new JPanel();
-		saveFractalConfig = new JButton("Save");
-		loadFractalConfig = new JButton("Load");
-		saveImage = new JButton("Save Screenshot");
-		createColorPalette = new JButton("Create New Color Palette");
-		buttonPanel.add(saveFractalConfig);
-		buttonPanel.add(loadFractalConfig);
-		buttonPanel.add(saveImage);
-		buttonPanel.add(createColorPalette);
+		menuBar = new JMenuBar();
 
-		colorSchemeComboBox = new JComboBox<>();
-		colorSchemeComboBox.setRenderer(new ColorSchemeListCellRenderer());
-		loadColorSchemes(events.getColorScheme());
-		buttonPanel.add(colorSchemeComboBox);
+		fileMenu = new JMenu("File");
+		saveMenuItem = new JMenuItem("Save");
+		loadMenuItem = new JMenuItem("Load");
+		saveImageMenuItem = new JMenuItem("Save Screenshot");
+		exitMenuItem = new JMenuItem("Exit");
+		fileMenu.add(saveMenuItem);
+		fileMenu.add(loadMenuItem);
+		fileMenu.add(saveImageMenuItem);
+		fileMenu.add(exitMenuItem);
 
-		saveFractalConfig.addActionListener(new SaveConfigActionListener());
-		loadFractalConfig.addActionListener(new LoadConfigActionListener());
-		saveImage.addActionListener(new SaveImageActionListener());
-		createColorPalette.addActionListener(new CreateColorPaletteListener());
-		colorSchemeComboBox.addActionListener(new ColorSchemeComboBoxListener());
+		optionsMenu = new JMenu("Options");
+		createColorPaletteMenuItem = new JMenuItem("Create Color Palette");
+		selectColorSchemeMenu = new JMenu("Select Color Scheme");
+		setSelectedColorScheme();
+		
+		optionsMenu.add(createColorPaletteMenuItem);
+		optionsMenu.add(selectColorSchemeMenu);
+
+		menuBar.add(fileMenu);
+		menuBar.add(optionsMenu);
+
+		saveMenuItem.addActionListener(new SaveMenuItemActionListener());
+		loadMenuItem.addActionListener(new LoadMenuItemActionListener());
+		saveImageMenuItem.addActionListener(new SaveImageMenuItemActionListener());
+		exitMenuItem.addActionListener(new ExitMenuItemActionListener());
+		createColorPaletteMenuItem.addActionListener(new CreateColorPaletteMenuItemActionListener());
+
 		imageLabel.addMouseListener(events);
 		imageLabel.addMouseMotionListener(events);
 
-		frame.add(buttonPanel, BorderLayout.NORTH);
+		frame.add(menuBar, BorderLayout.NORTH);
 		frame.add(imageLabel, BorderLayout.SOUTH);
 		
 		imageLabel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
@@ -143,56 +154,28 @@ public class FractalsUI {
 		return imageLabel;
 	}
 
-	/** This method is used to add all of the ColorSchemes to colorSchemeComboBox.
-	 * It also sets the selected ColorScheme to the one in the FractalConfig.
-	 * 
-	 * @param selectedColorScheme
-	 */
-	private void loadColorSchemes(ColorScheme selectedColorScheme) {
-		DefaultComboBoxModel<ColorScheme> model = (DefaultComboBoxModel<ColorScheme>)this.colorSchemeComboBox.getModel();
-		for (ColorScheme scheme : events.getFractalViewer().getSupportedColorSchemes()) {
-			model.addElement(scheme);
-		}
-		setSelectedColorSchemes(selectedColorScheme);
-	}
-
-	/** This method updates the selected ColorScheme to the one in the FractalConfig.
-	 * 
-	 * @param selectedColorScheme
-	 */
-	private void setSelectedColorSchemes(ColorScheme selectedColorScheme) {
-		DefaultComboBoxModel<ColorScheme> model = (DefaultComboBoxModel<ColorScheme>)this.colorSchemeComboBox.getModel();
-		model.setSelectedItem(selectedColorScheme);
-	}
-
-	/** This class is used to add ColorSchemes to colorSchemeComboBox,
-	 * but it only shows the name of the ColorScheme.
-	 * 
-	 * @author M00031
-	 *
-	 */
-	private class ColorSchemeListCellRenderer extends DefaultListCellRenderer {
-
-		private static final long serialVersionUID = -8726267565122387060L;
-
-		@Override
-		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-
-			if (value instanceof ColorScheme) {
-				value = ((ColorScheme)value).getName();
+	private void setSelectedColorScheme() {
+		selectColorSchemeMenu.removeAll();
+		ButtonGroup bg = new ButtonGroup();
+		for(ColorScheme scheme : events.getFractalViewer().getSupportedColorSchemes()) {
+			JRadioButtonMenuItem newRadioButton = new JRadioButtonMenuItem(scheme.getName());
+			newRadioButton.addActionListener(new ColorSchemeMenuItemsListener(scheme.getName()));
+			bg.add(newRadioButton);
+			selectColorSchemeMenu.add(newRadioButton);
+			if(events.getFractalViewer().getConfig().getColorScheme().getName().equals(scheme.getName())) {
+				newRadioButton.setSelected(true);
 			}
-
-			return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 		}
-
 	}
 
-	/** This class is the ActionListener for the saveFractalConfig button.
+
+
+	/** This class is the ActionListener for the saveMenuItem JMenuItem.
 	 * 
 	 * @author M00031
 	 *
 	 */
-	private class SaveConfigActionListener implements ActionListener {
+	private class SaveMenuItemActionListener implements ActionListener {
 
 		private ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
 		private JFileChooser fileChooser = new JFileChooser();
@@ -204,12 +187,12 @@ public class FractalsUI {
 		}
 	}
 
-	/** This class is the ActionListener for the loadFractalConfig button.
+	/** This class is the ActionListener for the loadMenuItem JMenuItem.
 	 * 
 	 * @author M00031
 	 *
 	 */
-	private class LoadConfigActionListener implements ActionListener {
+	private class LoadMenuItemActionListener implements ActionListener {
 
 		private ConfigSaverLoader saverLoader = ConfigSaverLoader.getDefaultConfigSaverLoader();
 		private JFileChooser fileChooser = new JFileChooser();
@@ -218,18 +201,18 @@ public class FractalsUI {
 			if(fileChooser.showDialog(null, "Load") == JFileChooser.APPROVE_OPTION) {
 				events.getFractalViewer().setConfig((FractalConfig)saverLoader.load(events.getFractalViewer().getConfig().getClass(), fileChooser.getSelectedFile().getAbsolutePath()));
 				image.setImage(events.getFractalViewer().getView(frameDimension));
-				setSelectedColorSchemes(events.getFractalViewer().getConfig().getColorScheme());
 				frame.repaint();
 			}
+			setSelectedColorScheme();
 		}
 	}
 
-	/** This class is the ActionListener for the saveImage button.
+	/** This class is the ActionListener for the saveImageMenuItem JMenuItem.
 	 * 
 	 * @author M00031
 	 *
 	 */
-	private class SaveImageActionListener implements ActionListener {
+	private class SaveImageMenuItemActionListener implements ActionListener {
 
 		private List<String> extensions = Arrays.asList("png", "jpg", "jpeg", "bmp", "gif");
 		private JFileChooser fileChooser = new JFileChooser();
@@ -255,12 +238,24 @@ public class FractalsUI {
 		}
 	}
 
-	/** This class is the ActionListener for the createColorPalette button.
+	/** This class is the ActionListener for the exitMenuItem JMenuItem.
 	 * 
 	 * @author M00031
 	 *
 	 */
-	private class CreateColorPaletteListener implements ActionListener {
+	private class ExitMenuItemActionListener implements ActionListener {
+
+		public void actionPerformed(ActionEvent ae) {
+			System.exit(0);
+		}
+	}
+
+	/** This class is the ActionListener for the createColorPaletteMenuItem JMenuItem.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class CreateColorPaletteMenuItemActionListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent ae) {
 			if(events.supportsColorPalette()){
@@ -270,17 +265,27 @@ public class FractalsUI {
 			}
 		}
 	}
-	
-	/** This class is the ActionListener for the colorSchemeComboBox JComboBox.
-	 * It is used to detect when a different item is selected in the drop-down.
+
+	/** This class serves as the ActionListeners for all of the JMenuItems that have to do with changing the ColorScheme.
 	 * 
 	 * @author M00031
 	 *
 	 */
-	private class ColorSchemeComboBoxListener implements ActionListener {
-		
+	private class ColorSchemeMenuItemsListener implements ActionListener {
+
+		ColorScheme colorScheme;
+
+		public ColorSchemeMenuItemsListener(String colorSchemeName) {
+			List<ColorScheme> supportedColorSchemes = events.getFractalViewer().getSupportedColorSchemes();
+			for(int count = 0; count < supportedColorSchemes.size(); count++) {
+				if(supportedColorSchemes.get(count).getName().equals(colorSchemeName)) {
+					colorScheme = events.getFractalViewer().getSupportedColorSchemes().get(count);
+				}
+			}
+		}
+
 		public void actionPerformed(ActionEvent ae) {
-			events.setColorScheme((ColorScheme)colorSchemeComboBox.getSelectedItem());
+			events.setColorScheme(colorScheme);
 			image.setImage(events.getFractalViewer().getView(frameDimension));
 			frame.repaint();
 		}

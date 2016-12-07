@@ -15,7 +15,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sarahhand.fractals.mandelbrotset.colorscheme.BlackColorScheme;
 import com.sarahhand.fractals.mandelbrotset.colorscheme.EscapeTimeColorScheme;
 import com.sarahhand.fractals.mandelbrotset.colorscheme.ExternalDistanceEstimateColorScheme;
 import com.sarahhand.fractals.model.ColorScheme;
@@ -253,6 +252,6 @@ public class MandelbrotViewer implements FractalViewer{
 	
 	@Override
 	public List<ColorScheme> getSupportedColorSchemes(){
-		return Arrays.asList(new EscapeTimeColorScheme(), new ExternalDistanceEstimateColorScheme(), new BlackColorScheme());
+		return Arrays.asList(new EscapeTimeColorScheme(), new ExternalDistanceEstimateColorScheme());
 	}
 }

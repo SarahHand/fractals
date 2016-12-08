@@ -40,7 +40,7 @@ public class ColorPanel extends JPanel {
 
 		changeColor = new JButton("Change Color");
 		removeColor = new JButton("Remove");
-		colorPosition = new JSlider(0, colorPalette.getColorPaletteLength());
+		colorPosition = new JSlider(0, colorPalette.getColorPaletteLength() - 1);
 
 		position = colorPosition.getValue();
 
@@ -67,7 +67,7 @@ public class ColorPanel extends JPanel {
 	}
 
 	/** Used to call removeColor() from ChangeColorPalette because "this" needs to be used and it refers
-	 * to ActionListener on line 39.
+	 * to ActionListener for the removeColor button.
 	 */
 	private void remove(ChangeColorPalette colorPalette) {
 		colorPalette.removeColor(this);

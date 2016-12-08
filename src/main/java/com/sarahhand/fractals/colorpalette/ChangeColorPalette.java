@@ -62,7 +62,6 @@ public class ChangeColorPalette {
 		frame = new JFrame("Color Palette Creator");
 		frame.setLayout(new BorderLayout());
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		colorPanelsPanel = new JPanel();
 
@@ -91,7 +90,7 @@ public class ChangeColorPalette {
 
 		saveMenuItem.addActionListener(new ActionListener() {
 
-			private ColorPaletteSaverLoader saverLoader = ColorPaletteSaverLoader.getDefaultConfigSaverLoader();
+			private ColorPaletteSaverLoader saverLoader = ColorPaletteSaverLoader.getDefaultColorPaletteSaverLoader();
 			private JFileChooser fileChooser = new JFileChooser();
 
 			public void actionPerformed(ActionEvent ae) {
@@ -103,7 +102,7 @@ public class ChangeColorPalette {
 		});
 		loadMenuItem.addActionListener(new ActionListener() {
 
-			private ColorPaletteSaverLoader saverLoader = ColorPaletteSaverLoader.getDefaultConfigSaverLoader();
+			private ColorPaletteSaverLoader saverLoader = ColorPaletteSaverLoader.getDefaultColorPaletteSaverLoader();
 			private JFileChooser fileChooser = new JFileChooser();
 
 			public void actionPerformed(ActionEvent ae) {

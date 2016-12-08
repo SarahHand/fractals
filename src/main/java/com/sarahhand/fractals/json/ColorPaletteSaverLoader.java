@@ -27,7 +27,7 @@ public class ColorPaletteSaverLoader {
 
 	private ColorPaletteSaverLoader() {}
 
-	public static ColorPaletteSaverLoader getDefaultConfigSaverLoader() {
+	public static ColorPaletteSaverLoader getDefaultColorPaletteSaverLoader() {
 		return DEFAULT;
 	}
 

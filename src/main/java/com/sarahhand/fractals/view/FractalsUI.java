@@ -199,7 +199,8 @@ public class FractalsUI {
 
 		public void actionPerformed(ActionEvent ae) {
 			if(fileChooser.showDialog(null, "Load") == JFileChooser.APPROVE_OPTION) {
-				events.getFractalViewer().setConfig((FractalConfig)saverLoader.load(events.getFractalViewer().getConfig().getClass(), fileChooser.getSelectedFile().getAbsolutePath()));
+				events.getFractalViewer().setConfig((FractalConfig)saverLoader.load(events.getFractalViewer().getConfig().getClass(),
+						fileChooser.getSelectedFile().getAbsolutePath()));
 				image.setImage(events.getFractalViewer().getView(frameDimension));
 				frame.repaint();
 			}
@@ -273,7 +274,7 @@ public class FractalsUI {
 	 */
 	private class ColorSchemeMenuItemsListener implements ActionListener {
 
-		ColorScheme colorScheme;
+		private ColorScheme colorScheme;
 
 		public ColorSchemeMenuItemsListener(String colorSchemeName) {
 			List<ColorScheme> supportedColorSchemes = events.getFractalViewer().getSupportedColorSchemes();

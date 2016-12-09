@@ -13,7 +13,7 @@ import com.sarahhand.fractals.model.FractalConfig;
  * @author J9465812
  * 
  * @see
- * MandelbrotViewerImpl
+ * MandelbrotViewer
  */
 
 public interface FractalViewer{

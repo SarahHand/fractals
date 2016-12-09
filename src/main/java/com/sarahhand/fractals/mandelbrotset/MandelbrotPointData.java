@@ -13,6 +13,10 @@ import com.sarahhand.fractals.model.PointData;
 public class MandelbrotPointData implements PointData{
 	
 	private Double location;
+	
+	/**
+	 * Number of iterations of the Mandelbrot equation when it was determined to diverged
+	 */
 	private int escapeTime;
 	
 	/**

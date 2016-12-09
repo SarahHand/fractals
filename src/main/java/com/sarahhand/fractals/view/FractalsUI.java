@@ -112,6 +112,8 @@ public class FractalsUI {
 
 		imageLabel.addMouseListener(events);
 		imageLabel.addMouseMotionListener(events);
+		imageLabel.addMouseWheelListener(events);
+		imageLabel.addKeyListener(events);
 
 		frame.add(menuBar, BorderLayout.NORTH);
 		frame.add(imageLabel, BorderLayout.SOUTH);

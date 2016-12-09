@@ -43,6 +43,7 @@ public class MandelbrotEventHandler implements FractalEventHandler{
 		this.viewer = (MandelbrotViewer) new FractalViewerFactory().createViewer(FractalType.MANDELBROT_SET);
 		this.ui = ui;
 	}
+	
 	@Override
 	public void mouseClicked(MouseEvent me){
 		

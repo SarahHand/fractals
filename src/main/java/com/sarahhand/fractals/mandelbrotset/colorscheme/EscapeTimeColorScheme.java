@@ -41,19 +41,26 @@ public class EscapeTimeColorScheme implements ColorScheme{
 		MandelbrotPointData castData = (MandelbrotPointData)data;
 		MandelbrotConfig castConfig = (MandelbrotConfig)config;
 		
-		ComplexNumber z = castData.getAllZValues().get(castData.getAllZValues().size()-1);
+		ComplexNumber z = castData.getAllZValues().get(castData.getEscapeTime());
 		
+		//nu = log2(log2(|z|))
 		double log_zn = Math.log(z.x*z.x+z.y*z.y)/2;
 		double nu = Math.log(log_zn/LOG2)/LOG2;
 		
 		double interpolateValue = (double)castData.getEscapeTime() + 1.0 - nu;
 		
+		//fudge factor to improve visualization
 		interpolateValue = Math.log(Math.abs(interpolateValue))/Math.log(1.01);
 		
+		//To handle negative numbers with mod
+		//((n mod m)+ m ) mod m)
+		//n = interpolateValue
+		//m = color palette length
 		Color col1 = castConfig.getPalette().getColor(((int)(Math.floor(interpolateValue)) %
 				ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %
 				ColorPalette.COLOR_PALETTE_LENGTH);
 		
+		//n = interpolateValue + 1
 		Color col2 = castConfig.getPalette().getColor(((int)(Math.floor(interpolateValue+1)) %
 				ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %
 				ColorPalette.COLOR_PALETTE_LENGTH);
@@ -63,7 +70,7 @@ public class EscapeTimeColorScheme implements ColorScheme{
 	
 	
 	/**
-	 * Mixes c1 and c2 based on the value of amount.
+	 * Weighted mixture of c1 and c2 based on the value of amount.
 	 * @param c1
 	 * @param c2
 	 * @param amount

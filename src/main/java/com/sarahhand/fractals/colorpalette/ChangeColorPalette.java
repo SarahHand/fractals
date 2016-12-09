@@ -97,7 +97,7 @@ public class ChangeColorPalette {
 			public void actionPerformed(ActionEvent ae) {
 				createColorPalette();
 				if(fileChooser.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
-					saverLoader.save(newColorPalette, fileChooser.getSelectedFile().getAbsolutePath());
+					saverLoader.save(temporaryColorPalette, fileChooser.getSelectedFile().getAbsolutePath());
 				}
 			}
 		});

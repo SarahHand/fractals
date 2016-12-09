@@ -43,6 +43,8 @@ public class ExternalDistanceEstimateColorScheme implements ColorScheme{
 		ComplexNumber pnc = castData.getAllZValues().get(castData.getEscapeTime());
 		double absPnc = Math.sqrt(pnc.x*pnc.x+pnc.y*pnc.y);
 		
+		
+		//uses chain rule to calculate ∂z/∂c
 		ComplexNumber partialC = ComplexNumber.ONE;
 		
 		for(int n = 0; n < castData.getEscapeTime(); n++){
@@ -52,14 +54,20 @@ public class ExternalDistanceEstimateColorScheme implements ColorScheme{
 		
 		double absPartialC = Math.sqrt(partialC.x*partialC.x+partialC.y*partialC.y);
 		
-		double b = 2 * absPnc*Math.log(absPnc)/absPartialC;
+		double distaceEstimate = 2 * absPnc*Math.log(absPnc)/absPartialC;
 		
-		double interpolateValue = Math.log(b)/Math.log(1.05);
+		//fudge factor to improve visualization
+		double interpolateValue = Math.log(distaceEstimate)/Math.log(1.05);
 		
+		//To handle negative numbers with mod
+		//((n mod m)+ m ) mod m)
+		//n = interpolateValue
+		//m = color palette length
 		Color col1 = castConfig.getPalette().getColor(((int)(Math.floor(interpolateValue)) %
 				ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %
 				ColorPalette.COLOR_PALETTE_LENGTH);
 		
+		//n = interpolateValue + 1
 		Color col2 = castConfig.getPalette().getColor(((int)(Math.floor(interpolateValue+1)) %
 				ColorPalette.COLOR_PALETTE_LENGTH + ColorPalette.COLOR_PALETTE_LENGTH) %
 				ColorPalette.COLOR_PALETTE_LENGTH);
@@ -69,7 +77,7 @@ public class ExternalDistanceEstimateColorScheme implements ColorScheme{
 	
 	
 	/**
-	 * Mixes c1 and c2 based on the value of amount.
+	 * Weighted mixture of c1 and c2 based on the value of amount.
 	 * @param c1
 	 * @param c2
 	 * @param amount

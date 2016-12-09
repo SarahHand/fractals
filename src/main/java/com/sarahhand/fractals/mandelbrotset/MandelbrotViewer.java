@@ -43,8 +43,6 @@ public class MandelbrotViewer implements FractalViewer{
 	 */
 	public static final int MAX_Z = 1000000;
 	
-//	public static final int RECT_BUFFER = 2000;
-	
 	private MandelbrotConfig config;
 	
 	@Override
@@ -89,35 +87,6 @@ public class MandelbrotViewer implements FractalViewer{
 			}
 		}
 		
-//		Another method I tried to optimize panning,
-//		kept in case I find a way to make it better.
-		
-//		Rectangle top = new Rectangle(predrawnPoints.x, predrawnPoints.y - RECT_BUFFER, predrawnPoints.width, RECT_BUFFER);
-//		Rectangle bottom = new Rectangle(predrawnPoints.x, predrawnPoints.y + predrawnPoints.height, predrawnPoints.width, RECT_BUFFER);//works
-//		Rectangle left = new Rectangle(predrawnPoints.x - RECT_BUFFER, predrawnPoints.y - RECT_BUFFER, RECT_BUFFER, RECT_BUFFER*3);
-//		Rectangle right = new Rectangle(predrawnPoints.x + predrawnPoints.width, predrawnPoints.y + RECT_BUFFER, RECT_BUFFER, RECT_BUFFER*3);
-//		
-//		Rectangle topIntersect = frame.intersection(top);
-//		Rectangle bottomIntersect = frame.intersection(bottom);
-//		Rectangle leftIntersect = frame.intersection(left);
-//		Rectangle rightIntersect = frame.intersection(right);
-//		
-//		if(!topIntersect.isEmpty()){
-//			renderRect(g, topIntersect, dimensions, 10);
-//		}
-//		
-//		if(!bottomIntersect.isEmpty()){
-//			renderRect(g, bottomIntersect, dimensions, 10);
-//		}
-//		
-//		if(!leftIntersect.isEmpty()){
-//			renderRect(g, leftIntersect, dimensions, 10);
-//		}
-//		
-//		if(!rightIntersect.isEmpty()){
-//			renderRect(g, rightIntersect, dimensions, 10);
-//		}
-		
 		log.info("Time to generate Mandelbrot image: {}ms.", System.currentTimeMillis()-time);
 		
 		return image;
@@ -125,8 +94,10 @@ public class MandelbrotViewer implements FractalViewer{
 	
 	private void renderRect(Graphics2D g2d, Rectangle rect, Dimension dimensions, int minSize){
 		
+		//if rect is small...
 		if(rect.width < minSize || rect.height < minSize){
 			
+			//fill it in
 			for(int x = rect.x; x < rect.x + rect.width; x++){
 				for(int y = rect.y; y < rect.y + rect.width; y++){
 					renderPoint(new Point(x, y), g2d, dimensions);
@@ -136,6 +107,7 @@ public class MandelbrotViewer implements FractalViewer{
 			return;
 		}
 		
+		//check boundary points
 		boolean filledRect = true;
 		
 		for(int x = rect.x; x < rect.x+rect.width; x++){
@@ -150,13 +122,16 @@ public class MandelbrotViewer implements FractalViewer{
 			filledRect = filledRect && renderPoint(new Point(rect.x + rect.width, y), g2d, dimensions);
 		}
 		
+		//if they are all black ...
 		if(filledRect == true){
 			
+			//fill it in with black
 			g2d.setColor(Color.BLACK);
 			
 			g2d.fill(rect);
 		}else{
 			
+			//otherwise, divide into four rectangles and render them
 			int centerX = rect.x + rect.width/2;
 			int centerY = rect.y + rect.height/2;
 			
@@ -220,14 +195,17 @@ public class MandelbrotViewer implements FractalViewer{
 		
 		double q = (p.x - 0.25)*(p.x - 0.25) + p.y*p.y;
 		
+		//point is black if it is in cardioid...
 		if(q*(q+(p.x - 0.25)) < 0.25*p.y*p.y){
 			return Color.black;
 		}
 		
+		//or the main bulb
 		if((p.x+1)*(p.x+1)+p.y*p.y < 0.0625){
 			return Color.black;
 		}
 		
+		//iterate equations...
 		ComplexNumber c = new ComplexNumber(p.x, p.y);
 		ComplexNumber z = new ComplexNumber(0, 0);
 		
@@ -239,14 +217,14 @@ public class MandelbrotViewer implements FractalViewer{
 			
 			z = z.multiply(z).add(c);
 			
+			//until it diverges...
 			if(z.x*z.x+z.y*z.y > MAX_Z){
 				
 				return config.getColorScheme().getColor(new MandelbrotPointData(p, n, zValues), config);
 			}
 		}
 		
-		//System.out.println(zValues.size());
-		
+		//or it doesn't
 		return Color.black;
 	}
 	

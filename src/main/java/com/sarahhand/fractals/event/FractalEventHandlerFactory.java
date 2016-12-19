@@ -1,5 +1,6 @@
 package com.sarahhand.fractals.event;
 
+import com.sarahhand.fractals.juliaset.JuliaEventHandler;
 import com.sarahhand.fractals.mandelbrotset.MandelbrotEventHandler;
 import com.sarahhand.fractals.model.FractalType;
 import com.sarahhand.fractals.view.FractalsUI;
@@ -21,6 +22,8 @@ public class FractalEventHandlerFactory{
 		switch (type) {
 			case MANDELBROT_SET: 
 				return new MandelbrotEventHandler(ui);
+			case JULIA_SET: 
+				return new JuliaEventHandler(ui);
 			default: 
 				return new MandelbrotEventHandler(ui);
 		}

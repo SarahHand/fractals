@@ -1,5 +1,7 @@
 package com.sarahhand.fractals.viewer;
 
+import com.sarahhand.fractals.juliaset.JuliaConfig;
+import com.sarahhand.fractals.juliaset.JuliaViewer;
 import com.sarahhand.fractals.mandelbrotset.MandelbrotConfig;
 import com.sarahhand.fractals.mandelbrotset.MandelbrotViewer;
 import com.sarahhand.fractals.model.FractalType;
@@ -23,6 +25,8 @@ public class FractalViewerFactory{
 		switch (type) {
 			case MANDELBROT_SET : 
 				return new MandelbrotViewer(MandelbrotConfig.DEAFAULT_CONFIG);
+			case JULIA_SET : 
+				return new JuliaViewer(JuliaConfig.DEAFAULT_CONFIG);
 			default : 
 				return new MandelbrotViewer(MandelbrotConfig.DEAFAULT_CONFIG);
 		}

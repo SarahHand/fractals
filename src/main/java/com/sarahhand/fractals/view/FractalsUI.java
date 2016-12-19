@@ -77,7 +77,7 @@ public class FractalsUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		eventHandlerFactory = new FractalEventHandlerFactory();
-		events = eventHandlerFactory.createEventHandler(this, FractalType.MANDELBROT_SET);
+		events = eventHandlerFactory.createEventHandler(this, FractalType.JULIA_SET);
 		image = new ImageIcon(events.getFractalViewer().getView(frameDimension));
 		imageLabel = new JLabel(image);
 

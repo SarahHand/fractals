@@ -7,5 +7,9 @@ public enum FractalType {
 	/**
 	 * The Mandelbrot Set
 	 */
-	MANDELBROT_SET
+	MANDELBROT_SET,
+	/**
+	 * Julia sets
+	 */
+	JULIA_SET
 }

@@ -1,6 +1,7 @@
 package com.sarahhand.fractals.model;
 
 import java.awt.geom.Point2D.Double;
+import java.util.Map;
 
 /**
  * Marker interface for a fractal's configuration information.
@@ -47,7 +48,7 @@ public interface FractalConfig{
 	public void setMaxDwell(int maxDwell);
 
 	/**
-	 * Sets the colorScheme.s
+	 * Sets the colorSchemes
 	 * @param colorScheme 
 	 * @return
 	 */
@@ -59,4 +60,9 @@ public interface FractalConfig{
 	 * @return
 	 */
 	public void setCenter(Double center);
+	
+	/**
+	 * @return the constants used by this fractal
+	 */
+	public Map<String,Float> getConstants();
 }

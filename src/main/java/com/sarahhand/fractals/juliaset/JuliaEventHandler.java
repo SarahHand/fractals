@@ -78,7 +78,7 @@ public class JuliaEventHandler implements FractalEventHandler{
 		double centerY = oldConfig.getCenter().y + yChange / oldConfig.getZoom();
 		Double newCenter = new Double(centerX, centerY);
 		
-		viewer.setConfig(new JuliaConfig(newCenter, oldConfig.getZoom(), oldConfig.getMaxDwell(), ((JuliaConfig)oldConfig).getPalette(), oldConfig.getColorScheme()));
+		viewer.setConfig(new JuliaConfig(newCenter, oldConfig.getZoom(), oldConfig.getMaxDwell(), ((JuliaConfig)oldConfig).getPalette(), oldConfig.getColorScheme(), oldConfig.getConstants()));
 		
 		ui.getImage().setImage(viewer.getViewPanning(ui.getFrameDimension(), oldConfig, oldImage));
 		ui.getFrame().repaint();
@@ -144,7 +144,7 @@ public class JuliaEventHandler implements FractalEventHandler{
 		double newZoom = config.getZoom() * zoomFactor;
 		int newMaxDwell = config.getMaxDwell() + maxDwellOffset;
 		
-		JuliaConfig newConfig = new JuliaConfig(newCenter, newZoom, newMaxDwell, config.getPalette(), config.getColorScheme());
+		JuliaConfig newConfig = new JuliaConfig(newCenter, newZoom, newMaxDwell, config.getPalette(), config.getColorScheme(), config.getConstants());
 		
 		viewer.setConfig(newConfig);
 	}

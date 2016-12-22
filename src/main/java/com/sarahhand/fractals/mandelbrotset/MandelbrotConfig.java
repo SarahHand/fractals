@@ -1,6 +1,8 @@
 package com.sarahhand.fractals.mandelbrotset;
 
 import java.awt.geom.Point2D.Double;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -142,5 +144,10 @@ public class MandelbrotConfig implements FractalConfig{
 		this.zoom = zoom;
 		this.maxDwell = maxDwell;
 		this.palette = palette;
+	}
+
+	@Override
+	public Map<String, Float> getConstants(){
+		return new HashMap<>();
 	}
 }

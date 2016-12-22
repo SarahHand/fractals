@@ -29,8 +29,8 @@ public class JuliaConfig implements FractalConfig{
 	private static Map<String,Float> initDefaultConstants(){
 		
 		Map<String,Float> constants = new HashMap<>();
-		constants.put("c real", -1.7f);
-		constants.put("c imaginary", 0.1f);
+		constants.put(JuliaViewer.C_REAL_NAME, -1.235f);
+		constants.put(JuliaViewer.C_IMAGINARY_NAME, 0.1f);
 		
 		return constants;
 	}
@@ -46,6 +46,13 @@ public class JuliaConfig implements FractalConfig{
 	private int maxDwell = MAX_DWELL_DEFAULT;
 	private ColorPalette palette = ColorPalette.DEFAULT_PALETTE;
 	private ColorScheme colorScheme = COLOR_SCHEME_DEFAULT;
+	
+	/**
+	 * Valid constant names:<ul>
+	 * <b><li>c imaginary</li>
+	 * <li>c real</li>
+	 * </ul></b>
+	 */
 	private Map<String,Float> constants = DEFAULT_CONSTANTS;
 	
 	/**
@@ -126,6 +133,7 @@ public class JuliaConfig implements FractalConfig{
 	 * @param maxDwell
 	 * @param palette
 	 * @param colorScheme
+	 * @param constants must contain keys: c real and c imaginary
 	 */
 	public JuliaConfig(Double center, double zoom, int maxDwell, ColorPalette palette, ColorScheme colorScheme, Map<String,Float> constants) {
 		this.x = center.x;
@@ -145,6 +153,7 @@ public class JuliaConfig implements FractalConfig{
 	 * @param zoom
 	 * @param maxDwell
 	 * @param palette
+	 * @param constants must contain keys: c real and c imaginary
 	 */
 	@JsonCreator
 	public JuliaConfig(@JsonProperty("x") double x, @JsonProperty("y") double y, 

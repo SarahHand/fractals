@@ -37,6 +37,9 @@ public class JuliaViewer implements FractalViewer{
 	
 	private static final int MIN_SIZE = 10;
 	
+	public static final String C_REAL_NAME = "c real";
+	public static final String C_IMAGINARY_NAME = "c imaginary";
+	
 	/**
 	 * The square of the maximum value z can reach before it is assumed to diverge.
 	 */
@@ -217,7 +220,7 @@ public class JuliaViewer implements FractalViewer{
 	
 	private Color getPointCol(Double p){
 		
-		ComplexNumber c = new ComplexNumber(config.getConstants().get("c real"), config.getConstants().get("c imaginary"));
+		ComplexNumber c = new ComplexNumber(config.getConstants().get(C_REAL_NAME), config.getConstants().get(C_IMAGINARY_NAME));
 		
 		//ComplexNumber c = new ComplexNumber(0.37259789000000026, 0.0909054899999998);
 		ComplexNumber z = new ComplexNumber(p.x, p.y);

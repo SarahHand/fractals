@@ -24,6 +24,13 @@ public class JuliaConfig implements FractalConfig{
 	private static final int ZOOM_DEFAULT = 200;
 	private static final int MAX_DWELL_DEFAULT = 500;
 	private static final ColorScheme COLOR_SCHEME_DEFAULT = new DefaultJuliaColorScheme();
+	
+	/**
+	 * Valid constant names:<ul>
+	 * <b><li>c imaginary</li>
+	 * <li>c real</li>
+	 * </ul></b>
+	 */
 	private static final Map<String,Float> DEFAULT_CONSTANTS = initDefaultConstants();
 	
 	private static Map<String,Float> initDefaultConstants(){

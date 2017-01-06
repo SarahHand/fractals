@@ -61,6 +61,8 @@ public interface FractalConfig{
 	 */
 	public void setCenter(Double center);
 	
+	public void setConstants(Map<String, Float> constants);
+	
 	/**
 	 * @return the constants used by this fractal
 	 */

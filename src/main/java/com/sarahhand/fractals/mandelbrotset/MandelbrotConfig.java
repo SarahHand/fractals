@@ -103,6 +103,8 @@ public class MandelbrotConfig implements FractalConfig{
 		y = center.y;
 	}
 	
+	public void setConstants(Map<String, Float> constants) {}
+	
 	/**
 	 * Default constructor creates config with default values.
 	 */

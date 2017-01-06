@@ -29,8 +29,7 @@ import com.sarahhand.fractals.colorpalette.ChangeColorPalette;
 import com.sarahhand.fractals.event.FractalEventHandler;
 import com.sarahhand.fractals.event.FractalEventHandlerFactory;
 import com.sarahhand.fractals.json.ConfigSaverLoader;
-import com.sarahhand.fractals.juliaset.JuliaConfig;
-import com.sarahhand.fractals.mandelbrotset.MandelbrotConfig;
+import com.sarahhand.fractals.juliaconstants.ChangeJuliaConstants;
 import com.sarahhand.fractals.model.ColorScheme;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.FractalType;
@@ -59,16 +58,17 @@ public class FractalsUI {
 
 	private JMenu fileMenu;
 	private JMenuItem saveMenuItem;
-	
+
 	private JMenu loadMenu;
 	private JMenuItem loadMandelbrotMenuItem;
 	private JMenuItem loadJuliaMenuItem;
-	
+
 	private JMenuItem saveImageMenuItem;
 	private JMenuItem exitMenuItem;
 
 	private JMenu optionsMenu;
 	private JMenuItem createColorPaletteMenuItem;
+	private JMenuItem setJuliaConstantsMenuItem;
 
 	private JMenu selectColorSchemeMenu;
 
@@ -78,6 +78,14 @@ public class FractalsUI {
 
 	private final int FRAME_WIDTH = 800;
 	private final int FRAME_HEIGHT = 600;
+
+	public FractalEventHandler getJuliaEvents() {
+		return juliaEvents;
+	}
+
+	private FractalsUI getThis() {
+		return this;
+	}
 
 	/** This method sets up the UI for the Mandelbrot Set Viewer.
 	 */
@@ -104,13 +112,13 @@ public class FractalsUI {
 
 		fileMenu = new JMenu("File");
 		saveMenuItem = new JMenuItem("Save");
-		
+
 		loadMenu = new JMenu("Load");
 		loadMandelbrotMenuItem = new JMenuItem("Mandelbrot Set");
 		loadJuliaMenuItem = new JMenuItem("Julia Set");
 		loadMenu.add(loadMandelbrotMenuItem);
 		loadMenu.add(loadJuliaMenuItem);
-		
+
 		saveImageMenuItem = new JMenuItem("Save Screenshot");
 		exitMenuItem = new JMenuItem("Exit");
 		fileMenu.add(saveMenuItem);
@@ -122,8 +130,11 @@ public class FractalsUI {
 		createColorPaletteMenuItem = new JMenuItem("Create Color Palette");
 		selectColorSchemeMenu = new JMenu("Select Color Scheme");
 		setSelectedColorScheme();
+		setJuliaConstantsMenuItem = new JMenuItem("Set Julia Constants");
+		setJuliaConstantsMenuItem.setEnabled(false);
 		optionsMenu.add(createColorPaletteMenuItem);
 		optionsMenu.add(selectColorSchemeMenu);
+		optionsMenu.add(setJuliaConstantsMenuItem);
 
 		fractalMenu = new JMenu("Fractal");
 		ButtonGroup bg = new ButtonGroup();
@@ -131,9 +142,9 @@ public class FractalsUI {
 		juliaSetMenuItem = new JRadioButtonMenuItem("Julia Set");
 		bg.add(mandelbrotSetMenuItem);
 		bg.add(juliaSetMenuItem);
+		mandelbrotSetMenuItem.setSelected(true);
 		fractalMenu.add(mandelbrotSetMenuItem);
 		fractalMenu.add(juliaSetMenuItem);
-		mandelbrotSetMenuItem.setSelected(true);
 
 		menuBar.add(fileMenu);
 		menuBar.add(optionsMenu);
@@ -147,6 +158,7 @@ public class FractalsUI {
 		createColorPaletteMenuItem.addActionListener(new CreateColorPaletteMenuItemActionListener());
 		mandelbrotSetMenuItem.addActionListener(new MandelbrotSetMenuItemActionListener());
 		juliaSetMenuItem.addActionListener(new JuliaSetMenuItemActionListener());
+		setJuliaConstantsMenuItem.addActionListener(new SetJuliaConstantsMenuItemActionListener());
 
 		imageLabel.addMouseListener(currentEvents);
 		imageLabel.addMouseMotionListener(currentEvents);
@@ -245,7 +257,7 @@ public class FractalsUI {
 			setSelectedColorScheme();
 		}
 	}
-	
+
 	/** This class is the ActionListener for the loadMenuItem JMenuItem.
 	 * 
 	 * @author M00031
@@ -329,6 +341,27 @@ public class FractalsUI {
 		}
 	}
 
+	/** This lets the ChangeColorPalette frame run on a different Thread.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class ChangePaletteRunnable implements Runnable {
+
+		private ChangeColorPalette changeCP;
+
+		public ChangePaletteRunnable(ChangeColorPalette changeCP) {
+			this.changeCP = changeCP;
+		}
+
+		public void run() {
+			while(changeCP.getCreatedColorPalette() == null) {}
+			currentEvents.setColorPalette(changeCP.getCreatedColorPalette());
+			image.setImage(currentEvents.getFractalViewer().getView(frameDimension));
+			frame.repaint();
+		}
+	}
+
 	/** This class serves as the ActionListeners for all of the JMenuItems that have to do with changing the ColorScheme.
 	 * 
 	 * @author M00031
@@ -354,6 +387,43 @@ public class FractalsUI {
 		}
 	}
 
+	/** This serves as the ActionListener for the setJuliaConstantsMenuItem JMenuItem. It brings up a window that
+	 * let's the user change the Julia Set constants. 
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class SetJuliaConstantsMenuItemActionListener implements ActionListener {
+
+		public void actionPerformed(ActionEvent ae) {
+			ChangeJuliaConstants changeConstants = new ChangeJuliaConstants(getThis());
+			Thread changeConstantsThread = new Thread(new ChangeConstantsRunnable(changeConstants));
+			changeConstantsThread.start();
+		}
+	}
+
+	/** This lets the ChangeColorPalette frame run on a different Thread.
+	 * 
+	 * @author M00031
+	 *
+	 */
+	private class ChangeConstantsRunnable implements Runnable {
+
+		private ChangeJuliaConstants changeConstants;
+
+		public ChangeConstantsRunnable(ChangeJuliaConstants changeConstants) {
+			this.changeConstants = changeConstants;
+		}
+
+		public void run() {
+			while(changeConstants.isFinished() == false) {}
+			juliaEvents.getFractalViewer().getConfig().setConstants(changeConstants.getJuliaConstants());
+			currentEvents = juliaEvents;
+			image.setImage(currentEvents.getFractalViewer().getView(frameDimension));
+			frame.repaint();
+		}
+	}
+
 	/** This class serves as the ActionListener for the mandelbrotSetMenuItem JMenuItem. It switches to
 	 * viewing the Mandelbrot Set.
 	 * 
@@ -363,10 +433,14 @@ public class FractalsUI {
 	private class MandelbrotSetMenuItemActionListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent ae) {
+			imageLabel.removeMouseListener(currentEvents);
+			imageLabel.removeMouseMotionListener(currentEvents);
 			currentEvents = mandelbrotEvents;
-			currentEvents.getFractalViewer().setConfig(MandelbrotConfig.DEAFAULT_CONFIG);
-			currentEvents.getFractalViewer().setConfig(MandelbrotConfig.DEAFAULT_CONFIG);
-			currentEvents.getFractalViewer().getView(frameDimension);
+			setSelectedColorScheme();
+			createColorPaletteMenuItem.setEnabled(false);
+			setJuliaConstantsMenuItem.setEnabled(false);
+			imageLabel.addMouseListener(currentEvents);
+			imageLabel.addMouseMotionListener(currentEvents);
 			image.setImage(currentEvents.getFractalViewer().getView(frameDimension));
 			frame.repaint();
 		}
@@ -381,31 +455,14 @@ public class FractalsUI {
 	private class JuliaSetMenuItemActionListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent ae) {
+			imageLabel.removeMouseListener(currentEvents);
+			imageLabel.removeMouseMotionListener(currentEvents);
 			currentEvents = juliaEvents;
-			currentEvents.getFractalViewer().setConfig(JuliaConfig.DEAFAULT_CONFIG);
-			currentEvents.getFractalViewer().setConfig(JuliaConfig.DEAFAULT_CONFIG);
-			currentEvents.getFractalViewer().getView(frameDimension);
-			image.setImage(currentEvents.getFractalViewer().getView(frameDimension));
-			frame.repaint();
-		}
-	}
-
-	/** This lets the ChangeColorPalette frame run on a different Thread.
-	 * 
-	 * @author M00031
-	 *
-	 */
-	private class ChangePaletteRunnable implements Runnable {
-
-		private ChangeColorPalette changeCP;
-
-		public ChangePaletteRunnable(ChangeColorPalette changeCP) {
-			this.changeCP = changeCP;
-		}
-
-		public void run() {
-			while (changeCP.getCreatedColorPalette() == null) {}
-			currentEvents.setColorPalette(changeCP.getCreatedColorPalette());
+			setSelectedColorScheme();
+			createColorPaletteMenuItem.setEnabled(false);
+			setJuliaConstantsMenuItem.setEnabled(true);
+			imageLabel.addMouseListener(currentEvents);
+			imageLabel.addMouseMotionListener(currentEvents);
 			image.setImage(currentEvents.getFractalViewer().getView(frameDimension));
 			frame.repaint();
 		}

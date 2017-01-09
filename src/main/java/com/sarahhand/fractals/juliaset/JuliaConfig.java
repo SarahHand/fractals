@@ -24,7 +24,7 @@ public class JuliaConfig implements FractalConfig{
 	private static final int ZOOM_DEFAULT = 200;
 	private static final int MAX_DWELL_DEFAULT = 500;
 	private static final ColorScheme COLOR_SCHEME_DEFAULT = new DefaultJuliaColorScheme();
-	
+
 	/**
 	 * Valid constant names:<ul>
 	 * <b><li>c imaginary</li>
@@ -32,16 +32,16 @@ public class JuliaConfig implements FractalConfig{
 	 * </ul></b>
 	 */
 	private static final Map<String,Float> DEFAULT_CONSTANTS = initDefaultConstants();
-	
+
 	private static Map<String,Float> initDefaultConstants(){
-		
+
 		Map<String,Float> constants = new HashMap<>();
 		constants.put(JuliaViewer.C_REAL_NAME, -1.235f);
 		constants.put(JuliaViewer.C_IMAGINARY_NAME, 0.1f);
-		
+
 		return constants;
 	}
-	
+
 	/**
 	 * The default JuliaConfig.
 	 */
@@ -53,7 +53,7 @@ public class JuliaConfig implements FractalConfig{
 	private int maxDwell = MAX_DWELL_DEFAULT;
 	private ColorPalette palette = ColorPalette.DEFAULT_PALETTE;
 	private ColorScheme colorScheme = COLOR_SCHEME_DEFAULT;
-	
+
 	/**
 	 * Valid constant names:<ul>
 	 * <b><li>c imaginary</li>
@@ -61,7 +61,7 @@ public class JuliaConfig implements FractalConfig{
 	 * </ul></b>
 	 */
 	private Map<String,Float> constants = DEFAULT_CONSTANTS;
-	
+
 	/**
 	 * The current x position of the center.
 	 * @return
@@ -69,7 +69,7 @@ public class JuliaConfig implements FractalConfig{
 	public double getX(){
 		return x;
 	}
-	
+
 	/**
 	 * The current y position of the center.
 	 * @return
@@ -77,7 +77,7 @@ public class JuliaConfig implements FractalConfig{
 	public double getY(){
 		return y;
 	}
-	
+
 	@JsonIgnore
 	public Double getCenter() {
 		return new Double(x, y);
@@ -90,7 +90,7 @@ public class JuliaConfig implements FractalConfig{
 	public int getMaxDwell() {
 		return maxDwell;
 	}
-	
+
 	/**
 	 * The current color palette.
 	 * @return
@@ -102,7 +102,7 @@ public class JuliaConfig implements FractalConfig{
 	public ColorScheme getColorScheme(){
 		return colorScheme;
 	}
-	
+
 	public void setZoom(double zoom){
 		this.zoom = zoom;
 	}
@@ -110,7 +110,7 @@ public class JuliaConfig implements FractalConfig{
 	public void setMaxDwell(int maxDwell){
 		this.maxDwell = maxDwell;
 	}
-	
+
 	/**
 	 * Sets the current color palette.
 	 * @param palette
@@ -122,17 +122,21 @@ public class JuliaConfig implements FractalConfig{
 	public void setColorScheme(ColorScheme colorScheme){
 		this.colorScheme = colorScheme;
 	}
-	
+
 	public void setCenter(Double center) {
 		x = center.x;
 		y = center.y;
 	}
-	
+
+	public void setConstants(Map<String, Float> constants) {	
+		this.constants = constants;
+	}
+
 	/**
 	 * Default constructor creates config with default values.
 	 */
 	private JuliaConfig() {}
-	
+
 	/** Creates a JuliaConfig with the specified values.
 	 * 
 	 * @param center
@@ -151,7 +155,7 @@ public class JuliaConfig implements FractalConfig{
 		this.colorScheme = colorScheme;
 		this.constants = constants;
 	}
-	
+
 	/**
 	 * Creates a JuliaConfig with the specified values, separating out the center x/y coordinates 
 	 * into different constructor args.

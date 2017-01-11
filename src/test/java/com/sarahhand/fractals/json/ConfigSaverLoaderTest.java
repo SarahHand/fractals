@@ -38,7 +38,7 @@ public class ConfigSaverLoaderTest{
 		scan.close();
 
 		//Act
-		saverLoader.save(MandelbrotConfig.DEAFAULT_CONFIG, filename);
+		saverLoader.save(filename, MandelbrotConfig.DEAFAULT_CONFIG);
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class ConfigSaverLoaderTest{
 		//Act
 		MandelbrotConfig config = null;
 		try (InputStream stream = new FileInputStream(filename)){
-			config = (MandelbrotConfig)saverLoader.load(MandelbrotConfig.class, stream);
+			config = (MandelbrotConfig)saverLoader.load(stream);
 		} catch (IOException e) {
 			System.err.println("Error reading contact from file=" + filename);
 			e.printStackTrace();

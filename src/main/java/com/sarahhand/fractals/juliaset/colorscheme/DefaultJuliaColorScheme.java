@@ -2,6 +2,7 @@ package com.sarahhand.fractals.juliaset.colorscheme;
 
 import java.awt.Color;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sarahhand.fractals.juliaset.JuliaConfig;
 import com.sarahhand.fractals.juliaset.JuliaPointData;
 import com.sarahhand.fractals.model.ColorPalette;
@@ -10,6 +11,7 @@ import com.sarahhand.fractals.model.ComplexNumber;
 import com.sarahhand.fractals.model.FractalConfig;
 import com.sarahhand.fractals.model.PointData;
 
+@JsonTypeName("DefaultJuliaColorScheme")
 public class DefaultJuliaColorScheme implements ColorScheme{
 	
 	private static final double LOG2 = Math.log(2);

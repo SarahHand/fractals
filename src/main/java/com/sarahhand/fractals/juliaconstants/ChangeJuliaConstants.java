@@ -14,6 +14,12 @@ import javax.swing.JPanel;
 
 import com.sarahhand.fractals.view.FractalsUI;
 
+/** This class opens a window that lets the user change the constants
+ * of the Julia Set.
+ * 
+ * @author M00031
+ *
+ */
 public class ChangeJuliaConstants {
 
 	private Map<String, Float> juliaConstants;
@@ -69,6 +75,7 @@ public class ChangeJuliaConstants {
 		frame.add(constantPanelsPanel);
 		frame.add(done, BorderLayout.NORTH);
 
+		frame.pack();
 		frame.setVisible(true);
 	}
 }

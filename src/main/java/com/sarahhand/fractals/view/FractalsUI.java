@@ -63,11 +63,12 @@ public class FractalsUI {
 
 	private JMenuItem saveImageMenuItem;
 	private JMenuItem loadMenuItem;
+	private JMenuItem helpMenuItem;
 	private JMenuItem exitMenuItem;
 
 	private JMenu optionsMenu;
 	private JMenuItem createColorPaletteMenuItem;
-	private JMenuItem setJuliaConstantsMenuItem;
+	private JMenuItem setConstantsMenuItem;
 
 	private JMenu selectColorSchemeMenu;
 
@@ -80,10 +81,6 @@ public class FractalsUI {
 
 	public FractalEventHandler getJuliaEvents() {
 		return juliaEvents;
-	}
-
-	private FractalsUI getThis() {
-		return this;
 	}
 
 	/** This method sets up the UI for the Mandelbrot Set Viewer.
@@ -114,21 +111,23 @@ public class FractalsUI {
 
 		saveImageMenuItem = new JMenuItem("Save Screenshot");
 		loadMenuItem = new JMenuItem("Load");
+		helpMenuItem = new JMenuItem("Help");
 		exitMenuItem = new JMenuItem("Exit");
 		fileMenu.add(saveMenuItem);
 		fileMenu.add(loadMenuItem);
 		fileMenu.add(saveImageMenuItem);
+		fileMenu.add(helpMenuItem);
 		fileMenu.add(exitMenuItem);
 
 		optionsMenu = new JMenu("Options");
 		createColorPaletteMenuItem = new JMenuItem("Create Color Palette");
 		selectColorSchemeMenu = new JMenu("Select Color Scheme");
 		setSelectedColorScheme();
-		setJuliaConstantsMenuItem = new JMenuItem("Set Julia Constants");
-		setJuliaConstantsMenuItem.setEnabled(false);
+		setConstantsMenuItem = new JMenuItem("Set Constants");
+		setConstantsMenuItem.setEnabled(false);
 		optionsMenu.add(createColorPaletteMenuItem);
 		optionsMenu.add(selectColorSchemeMenu);
-		optionsMenu.add(setJuliaConstantsMenuItem);
+		optionsMenu.add(setConstantsMenuItem);
 
 		fractalMenu = new JMenu("Fractal");
 		ButtonGroup bg = new ButtonGroup();
@@ -147,11 +146,12 @@ public class FractalsUI {
 		saveMenuItem.addActionListener(new SaveMenuItemActionListener());
 		loadMenuItem.addActionListener(new LoadMenuItemActionListener());
 		saveImageMenuItem.addActionListener(new SaveImageMenuItemActionListener());
+		helpMenuItem.addActionListener(new HelpMenuItemActionListener());
 		exitMenuItem.addActionListener(new ExitMenuItemActionListener());
 		createColorPaletteMenuItem.addActionListener(new CreateColorPaletteMenuItemActionListener());
 		mandelbrotSetMenuItem.addActionListener(new MandelbrotSetMenuItemActionListener());
 		juliaSetMenuItem.addActionListener(new JuliaSetMenuItemActionListener());
-		setJuliaConstantsMenuItem.addActionListener(new SetJuliaConstantsMenuItemActionListener());
+		setConstantsMenuItem.addActionListener(new SetJuliaConstantsMenuItemActionListener());
 
 		imageLabel.addMouseListener(currentEvents);
 		imageLabel.addMouseMotionListener(currentEvents);
@@ -284,6 +284,13 @@ public class FractalsUI {
 			}
 		}
 	}
+	
+	private class HelpMenuItemActionListener implements ActionListener {
+		
+		public void actionPerformed(ActionEvent ae) {
+			new Help();
+		}
+	}
 
 	/** This class is the ActionListener for the exitMenuItem JMenuItem.
 	 * 
@@ -368,7 +375,7 @@ public class FractalsUI {
 	private class SetJuliaConstantsMenuItemActionListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent ae) {
-			ChangeJuliaConstants changeConstants = new ChangeJuliaConstants(getThis());
+			ChangeJuliaConstants changeConstants = new ChangeJuliaConstants(currentEvents);
 			Thread changeConstantsThread = new Thread(new ChangeConstantsRunnable(changeConstants));
 			changeConstantsThread.start();
 		}
@@ -409,7 +416,7 @@ public class FractalsUI {
 			imageLabel.removeMouseMotionListener(currentEvents);
 			currentEvents = mandelbrotEvents;
 			setSelectedColorScheme();
-			setJuliaConstantsMenuItem.setEnabled(false);
+			setConstantsMenuItem.setEnabled(false);
 			imageLabel.addMouseListener(currentEvents);
 			imageLabel.addMouseMotionListener(currentEvents);
 			image.setImage(currentEvents.getFractalViewer().getView(frameDimension));
@@ -430,7 +437,7 @@ public class FractalsUI {
 			imageLabel.removeMouseMotionListener(currentEvents);
 			currentEvents = juliaEvents;
 			setSelectedColorScheme();
-			setJuliaConstantsMenuItem.setEnabled(true);
+			setConstantsMenuItem.setEnabled(true);
 			imageLabel.addMouseListener(currentEvents);
 			imageLabel.addMouseMotionListener(currentEvents);
 			image.setImage(currentEvents.getFractalViewer().getView(frameDimension));

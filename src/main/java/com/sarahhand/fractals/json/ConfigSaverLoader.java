@@ -27,7 +27,7 @@ public class ConfigSaverLoader{
 	private static final ConfigSaverLoader DEFAULT = new ConfigSaverLoader();
 
 	private ConfigSaverLoader(){}
-	
+
 	/**
 	 * Returns the default ConfigSaverLoader.
 	 * @return
@@ -50,7 +50,7 @@ public class ConfigSaverLoader{
 		} catch(IOException e) {
 			log.error("IOException thrown from loading file", e);
 		}
-		
+
 		return null;
 	}
 
@@ -65,9 +65,11 @@ public class ConfigSaverLoader{
 
 		JsonReaderWriter readerWriter = new JsonReaderWriter(PropertyNamingStrategy.SNAKE_CASE);
 
-		FractalEnvelope envelope = readerWriter.read(stream);
-
-		return envelope.getConfig();
+		FractalEnvelope envelope = readerWriter.read(stream, FractalEnvelope.class);
+		if(envelope != null) {
+			return envelope.getConfig();
+		}
+		return null;
 	}
 
 	/**
@@ -79,7 +81,7 @@ public class ConfigSaverLoader{
 	public boolean save(String fileName, FractalConfig config){
 
 		File file = new File(fileName);
-		
+
 		FractalEnvelope envelope = new FractalEnvelope();
 		envelope.setConfig(config);
 
@@ -94,7 +96,7 @@ public class ConfigSaverLoader{
 
 		try (OutputStream fos = new FileOutputStream(fileName);){
 
-			readerWriter.write(fos, envelope);
+			readerWriter.write(envelope, fos);
 		}catch (IOException e1){
 			// ^^^^^ this will never happen because of the previous try-catch statement...
 			return false; // ...but just in case...

@@ -241,13 +241,17 @@ public class FractalsUI {
 
 		public void actionPerformed(ActionEvent ae) {
 			if(fileChooser.showDialog(null, "Load") == JFileChooser.APPROVE_OPTION) {
-				FractalConfig newConfig = saverLoader.load(fileChooser.getSelectedFile().getName());
+				FractalConfig newConfig = saverLoader.load(fileChooser.getSelectedFile().getAbsolutePath());
 				if(newConfig instanceof MandelbrotConfig) {
-					System.out.println("MandelbrotConfig");
+					currentEvents = mandelbrotEvents;
+					currentEvents.getFractalViewer().setConfig(newConfig);
+					mandelbrotSetMenuItem.setSelected(true);
 				} else if(newConfig instanceof JuliaConfig) {
-					System.out.println("JuliaConfig");
+					currentEvents = juliaEvents;
+					currentEvents.getFractalViewer().setConfig(newConfig);
+					juliaSetMenuItem.setSelected(true);
 				}
-				image.setImage(mandelbrotEvents.getFractalViewer().getView(frameDimension));
+				image.setImage(currentEvents.getFractalViewer().getView(frameDimension));
 				frame.repaint();
 			}
 			setSelectedColorScheme();

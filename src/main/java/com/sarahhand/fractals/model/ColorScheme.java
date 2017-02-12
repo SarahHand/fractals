@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.sarahhand.fractals.juliaset.colorscheme.DefaultJuliaColorScheme;
 import com.sarahhand.fractals.mandelbrotset.colorscheme.EscapeTimeColorScheme;
 import com.sarahhand.fractals.mandelbrotset.colorscheme.ExternalDistanceEstimateColorScheme;
 
@@ -17,7 +18,8 @@ import com.sarahhand.fractals.mandelbrotset.colorscheme.ExternalDistanceEstimate
         property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = EscapeTimeColorScheme.class, name = "EscapeTime"),
-    @JsonSubTypes.Type(value = ExternalDistanceEstimateColorScheme.class, name = "ExternalDistance")
+    @JsonSubTypes.Type(value = ExternalDistanceEstimateColorScheme.class, name = "ExternalDistance"),
+    @JsonSubTypes.Type(value = DefaultJuliaColorScheme.class, name = "DefaultJuliaColorScheme")
 })
 public interface ColorScheme{
 	

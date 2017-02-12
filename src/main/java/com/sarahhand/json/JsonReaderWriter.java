@@ -19,9 +19,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 public class JsonReaderWriter{
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
+
 	private ObjectMapper mapper = new ObjectMapper();
-	
+
 	/**
 	 * The constructor.
 	 * @param pns
@@ -32,8 +32,8 @@ public class JsonReaderWriter{
 		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		mapper.setPropertyNamingStrategy(pns);
 	}
-	
-	/** This creates an object out using a JSON file.
+
+	/** This creates an object using a JSON file.
 	 * 
 	 * @param stream
 	 * @param target
@@ -48,7 +48,7 @@ public class JsonReaderWriter{
 		}
 		return null;
 	}
-	
+
 	/** This creates a JSON file using an object.
 	 * 
 	 * @param object

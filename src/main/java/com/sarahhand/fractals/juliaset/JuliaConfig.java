@@ -7,6 +7,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sarahhand.fractals.juliaset.colorscheme.DefaultJuliaColorScheme;
 import com.sarahhand.fractals.model.ColorPalette;
 import com.sarahhand.fractals.model.ColorScheme;
@@ -17,6 +18,8 @@ import com.sarahhand.fractals.model.FractalConfig;
  * 
  * @author J9465812
  */
+
+@JsonTypeName("JuliaSet")
 public class JuliaConfig implements FractalConfig{
 
 	private static final double CENTER_X_DEFAULT = 0;

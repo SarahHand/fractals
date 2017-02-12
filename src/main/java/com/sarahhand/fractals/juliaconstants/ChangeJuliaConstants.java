@@ -12,11 +12,17 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.sarahhand.fractals.view.FractalsUI;
+import com.sarahhand.fractals.event.FractalEventHandler;
 
+/** This class opens a window that lets the user change the constants
+ * of the fractal the user is viewing.
+ * 
+ * @author M00031
+ *
+ */
 public class ChangeJuliaConstants {
 
-	private Map<String, Float> juliaConstants;
+	private Map<String, Float> constants;
 
 	private JFrame frame;
 
@@ -27,7 +33,7 @@ public class ChangeJuliaConstants {
 	private volatile boolean finished = false;
 
 	public Map<String, Float> getJuliaConstants() {
-		return juliaConstants;
+		return constants;
 	}
 
 	public boolean isFinished() {
@@ -36,18 +42,18 @@ public class ChangeJuliaConstants {
 
 	private List<ConstantsPanel> constantPanels;
 
-	public ChangeJuliaConstants(FractalsUI ui) {
+	public ChangeJuliaConstants(FractalEventHandler events) {
 		frame = new JFrame("Julia Constants");
 		frame.setLayout(new BorderLayout());
 		frame.setSize(500, 500);
 
-		juliaConstants = ui.getJuliaEvents().getFractalViewer().getConfig().getConstants();
+		constants = events.getFractalViewer().getConfig().getConstants();
 
 		constantPanelsPanel = new JPanel();
 
 		constantPanels = new ArrayList<ConstantsPanel>();
 
-		Iterator<String> iterator = juliaConstants.keySet().iterator();
+		Iterator<String> iterator = constants.keySet().iterator();
 		while(iterator.hasNext()) {
 			ConstantsPanel panel = new ConstantsPanel(iterator.next());
 			constantPanels.add(panel);
@@ -59,7 +65,7 @@ public class ChangeJuliaConstants {
 		done.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				for(ConstantsPanel panel:constantPanels) {
-					juliaConstants.put(panel.getConstantName(), panel.getConstantValue());
+					constants.put(panel.getConstantName(), panel.getConstantValue());
 					finished = true;
 					frame.setVisible(false);
 				}
@@ -69,6 +75,7 @@ public class ChangeJuliaConstants {
 		frame.add(constantPanelsPanel);
 		frame.add(done, BorderLayout.NORTH);
 
+		frame.pack();
 		frame.setVisible(true);
 	}
 }

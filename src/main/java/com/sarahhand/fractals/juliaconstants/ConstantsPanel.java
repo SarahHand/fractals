@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /** Extension from JPanel that adds a JLabel and a JTextField to itself.
+ * This is used by the ChangeJuliaConstants class to change the Julia
+ * Set constants.
  * 
  * @author M00031
  *

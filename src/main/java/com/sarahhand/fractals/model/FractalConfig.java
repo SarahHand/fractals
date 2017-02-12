@@ -3,9 +3,23 @@ package com.sarahhand.fractals.model;
 import java.awt.geom.Point2D.Double;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.sarahhand.fractals.juliaset.JuliaConfig;
+import com.sarahhand.fractals.mandelbrotset.MandelbrotConfig;
+
 /**
  * Marker interface for a fractal's configuration information.
  */
+
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = MandelbrotConfig.class, name = "MandelbrotSet"),
+    @JsonSubTypes.Type(value = JuliaConfig.class, name = "JuliaSet")
+})
 public interface FractalConfig{
 
 	/**

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.sarahhand.fractals.model.FractalConfig;
+import com.sarahhand.fractals.model.FractalEnvelope;
 import com.sarahhand.json.JsonReaderWriter;
 
 /** This class is used to save and load FractalConfigs to a JSON file.
@@ -26,7 +27,7 @@ public class ConfigSaverLoader{
 	private static final ConfigSaverLoader DEFAULT = new ConfigSaverLoader();
 
 	private ConfigSaverLoader(){}
-	
+
 	/**
 	 * Returns the default ConfigSaverLoader.
 	 * @return
@@ -42,14 +43,14 @@ public class ConfigSaverLoader{
 	 * @param fileName
 	 * @return
 	 */
-	public FractalConfig load(Class<? extends FractalConfig> target, String fileName){
+	public FractalConfig load(String fileName){
 
 		try(InputStream fis = new FileInputStream(fileName);) {
-			return load(target, fis);
+			return load(fis);
 		} catch(IOException e) {
 			log.error("IOException thrown from loading file", e);
 		}
-		
+
 		return null;
 	}
 
@@ -60,13 +61,15 @@ public class ConfigSaverLoader{
 	 * @param stream
 	 * @return
 	 */
-	public FractalConfig load(Class<? extends FractalConfig> target, InputStream stream){
+	public FractalConfig load(InputStream stream){
 
 		JsonReaderWriter readerWriter = new JsonReaderWriter(PropertyNamingStrategy.SNAKE_CASE);
 
-		FractalConfig config = readerWriter.<FractalConfig>read(stream, target);
-
-		return config;
+		FractalEnvelope envelope = readerWriter.read(stream, FractalEnvelope.class);
+		if(envelope != null) {
+			return envelope.getConfig();
+		}
+		return null;
 	}
 
 	/**
@@ -75,9 +78,12 @@ public class ConfigSaverLoader{
 	 * @param fileName
 	 * @return
 	 */
-	public boolean save(FractalConfig config, String fileName){
+	public boolean save(String fileName, FractalConfig config){
 
 		File file = new File(fileName);
+
+		FractalEnvelope envelope = new FractalEnvelope();
+		envelope.setConfig(config);
 
 		try {
 			file.createNewFile();
@@ -90,9 +96,9 @@ public class ConfigSaverLoader{
 
 		try (OutputStream fos = new FileOutputStream(fileName);){
 
-			readerWriter.<FractalConfig>write(config, fos);
+			readerWriter.write(envelope, fos);
 		}catch (IOException e1){
-			// ^^^^^ this will never happen because of line 42...
+			// ^^^^^ this will never happen because of the previous try-catch statement...
 			return false; // ...but just in case...
 		}
 
